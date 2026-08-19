@@ -29,9 +29,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=2.6" />
-  <script src="motion.js?v=2.6" defer></script>
-  <script src="script.js?v=2.6" defer></script>
+  <link rel="stylesheet" href="style.css?v=2.7" />
+  <script src="motion.js?v=2.7" defer></script>
+  <script src="script.js?v=2.7" defer></script>
 </head>
 <body class="is-loading">
   <div class="preloader" id="preloader" aria-hidden="true">
@@ -488,26 +488,120 @@
     </div>
   </div>
 
-  <!-- CV Preview Modal -->
+  <!-- CV Preview & Permission Modal -->
   <div class="certificate-modal cv-modal" id="cvModal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Curriculum Vitae Muhammad Aziel">
     <button class="project-modal-backdrop" type="button" data-close-cv aria-label="Tutup CV"></button>
     <div class="certificate-modal-dialog cv-modal-dialog">
       <div class="cv-modal-header">
-        <div>
-          <span class="section-kicker">CURRICULUM VITAE</span>
+        <div class="cv-header-info">
+          <div class="cv-badge-row">
+            <span class="section-kicker">CURRICULUM VITAE</span>
+            <span class="cv-privacy-tag">🔒 PRIVACY PROTECTED</span>
+          </div>
           <h3>Muhammad Aziel Akbar Santoso</h3>
+          <p class="cv-sub">Backend Developer · Pasuruan, Jawa Timur</p>
         </div>
         <button class="certificate-modal-close" type="button" data-close-cv aria-label="Tutup">×</button>
       </div>
-      <div class="cv-modal-body">
-        <img id="cvModalImage" src="assets/images/cv-aziel.jpg" alt="CV Muhammad Aziel Akbar Santoso" />
+
+      <!-- CV Navigation Tabs -->
+      <div class="cv-modal-nav">
+        <button type="button" class="cv-tab-btn active" data-cv-tab="summary">📄 Ringkasan Profil</button>
+        <button type="button" class="cv-tab-btn" data-cv-tab="request">🔒 Minta Dokumen Lengkap</button>
       </div>
+
+      <div class="cv-modal-body">
+        <!-- Tab 1: Privacy Safe Profile Summary -->
+        <div class="cv-tab-panel active" id="cvTabSummary">
+          <div class="cv-profile-card">
+            <div class="cv-avatar-shell">
+              <img src="assets/images/foto2.jpeg" alt="Muhammad Aziel Akbar Santoso" />
+              <span class="cv-online-dot"></span>
+            </div>
+            <div class="cv-profile-details">
+              <div class="cv-item">
+                <span class="cv-label">Email Profesional</span>
+                <a href="mailto:azielakbar22@gmail.com" class="cv-val cv-link">azielakbar22@gmail.com <i>↗</i></a>
+              </div>
+              <div class="cv-item">
+                <span class="cv-label">Nomor Telepon</span>
+                <span class="cv-val cv-protected">•••• •••• 9299 <em title="Tersedia via tombol Minta Akses">🔒 Dilindungi</em></span>
+              </div>
+              <div class="cv-item">
+                <span class="cv-label">Alamat Rumah</span>
+                <span class="cv-val cv-protected">Pasuruan, Jawa Timur <em title="Alamat detail diberikan kepada instansi resmi">🔒 Dilindungi</em></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="cv-grid-sections">
+            <div class="cv-block">
+              <h4>🎓 Pendidikan</h4>
+              <ul>
+                <li><strong>SMKN 1 Sukorejo</strong> <span>(2024 - Sekarang)</span><small>Rekayasa Perangkat Lunak</small></li>
+                <li><strong>SMPN 1 Sukorejo</strong> <span>(2021 - 2024)</span></li>
+              </ul>
+            </div>
+
+            <div class="cv-block">
+              <h4>⚡ Keahlian Teknis</h4>
+              <div class="cv-skill-tags">
+                <span>Laravel</span><span>PHP</span><span>MySQL</span><span>REST API</span>
+                <span>Blade</span><span>Git &amp; GitHub</span><span>Postman</span><span>Railway</span>
+              </div>
+            </div>
+
+            <div class="cv-block cv-block-full">
+              <h4>🚀 Proyek Pilihan</h4>
+              <div class="cv-project-list">
+                <div class="cv-proj-item">
+                  <strong>SportField Platform</strong>
+                  <p>Sistem reservasi lapangan olahraga online anti-bentrok jadwal dengan multi-role auth &amp; live di Railway.</p>
+                </div>
+                <div class="cv-proj-item">
+                  <strong>LabTrack System</strong>
+                  <p>Aplikasi web manajemen inventaris &amp; peminjaman alat laboratorium terintegrasi.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Request Full CV Access Form -->
+        <div class="cv-tab-panel" id="cvTabRequest">
+          <div class="cv-request-intro">
+            <div class="cv-request-icon">🔒</div>
+            <h4>Minta File CV Resmi (Full PDF / HD)</h4>
+            <p>Untuk mencegah penyalahgunaan data pribadi (nomor telepon &amp; alamat), file CV lengkap akan dikirimkan langsung ke email resmi instansi/perusahaan Anda.</p>
+          </div>
+
+          <form class="cv-request-form" id="cvRequestForm">
+            <div class="cv-input-group">
+              <label for="cvReqName">Nama Anda / Recruiter</label>
+              <input type="text" id="cvReqName" name="name" placeholder="cth. Budi Santoso (HRD PT ABC)" required />
+            </div>
+            <div class="cv-input-group">
+              <label for="cvReqEmail">Email Perusahaan / Penerima</label>
+              <input type="email" id="cvReqEmail" name="email" placeholder="cth. hrd@perusahaan.com" required />
+            </div>
+            <div class="cv-input-group">
+              <label for="cvReqNote">Tujuan / Posisi</label>
+              <textarea id="cvReqNote" name="message" rows="2" placeholder="cth. Rekrutmen Backend Developer Intern" required></textarea>
+            </div>
+            <button type="submit" class="button button-primary cv-submit-btn" id="cvSubmitBtn">
+              <span>Kirim Permintaan CV</span><i>→</i>
+            </button>
+            <div class="cv-req-status" id="cvReqStatus"></div>
+          </form>
+        </div>
+      </div>
+
       <div class="cv-modal-footer">
-        <a href="assets/images/cv-aziel.jpg" download="CV_Muhammad_Aziel_Akbar_Santoso.jpg" class="button button-primary magnetic">
-          <span>Download CV (HD)</span><i>↓</i>
-        </a>
-        <a href="assets/images/cv-aziel.jpg" target="_blank" rel="noopener noreferrer" class="button button-secondary magnetic">
-          <span>Buka Layar Penuh</span><i>↗</i>
+        <button type="button" class="button button-secondary" id="cvSwitchTabBtn">
+          <span>🔒 Minta File CV Lengkap</span><i>→</i>
+        </button>
+        <a href="mailto:azielakbar22@gmail.com?subject=Permintaan%20CV%20-%20Muhammad%20Aziel" class="button button-primary magnetic">
+          <span>Kirim Email Langsung</span><i>✉</i>
         </a>
       </div>
     </div>

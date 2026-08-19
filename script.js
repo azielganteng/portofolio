@@ -849,16 +849,49 @@ document.addEventListener("DOMContentLoaded", () => {
   $$('[data-close-certificate]').forEach((button) => button.addEventListener("click", closeCertificateModal));
 
   /* =====================================================
-     CV PREVIEW MODAL
+     CV PREVIEW & PERMISSION MODAL
   ====================================================== */
 
   const cvModal = $("#cvModal");
   const downloadCvBtn = $("#downloadCv");
+  const cvTabButtons = $$("[data-cv-tab]", cvModal);
+  const cvTabPanels = {
+    summary: $("#cvTabSummary"),
+    request: $("#cvTabRequest")
+  };
+  const cvSwitchTabBtn = $("#cvSwitchTabBtn");
+  const cvRequestForm = $("#cvRequestForm");
+  const cvReqStatus = $("#cvReqStatus");
+  const cvSubmitBtn = $("#cvSubmitBtn");
   let lastCvTrigger = null;
+
+  function switchCvTab(tabKey) {
+    cvTabButtons.forEach((btn) => btn.classList.toggle("active", btn.dataset.cvTab === tabKey));
+    if (cvTabPanels.summary) cvTabPanels.summary.classList.toggle("active", tabKey === "summary");
+    if (cvTabPanels.request) cvTabPanels.request.classList.toggle("active", tabKey === "request");
+    if (cvSwitchTabBtn) {
+      if (tabKey === "summary") {
+        cvSwitchTabBtn.innerHTML = `<span>🔒 Minta File CV Lengkap</span><i>→</i>`;
+        cvSwitchTabBtn.onclick = () => switchCvTab("request");
+      } else {
+        cvSwitchTabBtn.innerHTML = `<span>📄 Kembali ke Ringkasan</span><i>←</i>`;
+        cvSwitchTabBtn.onclick = () => switchCvTab("summary");
+      }
+    }
+  }
+
+  cvTabButtons.forEach((btn) => {
+    btn.addEventListener("click", () => switchCvTab(btn.dataset.cvTab));
+  });
+
+  if (cvSwitchTabBtn) {
+    cvSwitchTabBtn.onclick = () => switchCvTab("request");
+  }
 
   function openCvModal(trigger) {
     if (!cvModal) return;
     lastCvTrigger = trigger || document.activeElement;
+    switchCvTab("summary");
     cvModal.classList.add("is-open");
     cvModal.setAttribute("aria-hidden", "false");
     document.body.classList.add("modal-open");
@@ -881,6 +914,52 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   $$('[data-close-cv]').forEach((button) => button.addEventListener("click", closeCvModal));
+
+  // CV Request Form Handler (Formspree)
+  cvRequestForm?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const endpoint = "https://formspree.io/f/xljroywk";
+    const formData = new FormData(cvRequestForm);
+    formData.append("_subject", `[CV Request] Permintaan CV dari ${formData.get("name")}`);
+
+    if (cvSubmitBtn) {
+      cvSubmitBtn.disabled = true;
+      cvSubmitBtn.innerHTML = `<span>Mengirim Permintaan...</span>`;
+    }
+    if (cvReqStatus) {
+      cvReqStatus.className = "cv-req-status";
+      cvReqStatus.textContent = "Menghubungi server...";
+    }
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        body: formData,
+        headers: { Accept: "application/json" }
+      });
+
+      if (response.ok) {
+        if (cvReqStatus) {
+          cvReqStatus.className = "cv-req-status success";
+          cvReqStatus.textContent = "✓ Permintaan terkirim! Aziel akan mengirimkan CV resmi ke email Anda.";
+        }
+        cvRequestForm.reset();
+        createToast("Permintaan CV berhasil dikirim ke Aziel!");
+      } else {
+        throw new Error("Gagal mengirim");
+      }
+    } catch {
+      if (cvReqStatus) {
+        cvReqStatus.className = "cv-req-status error";
+        cvReqStatus.textContent = "Gagal kirim via form. Silakan gunakan tombol Kirim Email Langsung di bawah.";
+      }
+    } finally {
+      if (cvSubmitBtn) {
+        cvSubmitBtn.disabled = false;
+        cvSubmitBtn.innerHTML = `<span>Kirim Permintaan CV</span><i>→</i>`;
+      }
+    }
+  });
 
   const contactForm = $("#contactForm");
   const formStatus = $("#formStatus");

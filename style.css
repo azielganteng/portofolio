@@ -33,55 +33,55 @@ img, svg { display: block; max-width: 100%; }
 
 
 /* =====================================================
-   CINEMATIC AMBIENT POLICE LIGHTS
+   CINEMATIC AMBIENT POLICE LIGHTS (HIGH-INTENSITY STROBE)
 ===================================================== */
 .site-ambient {
   position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
   background:
-    radial-gradient(circle at 50% 15%, rgba(255,255,255,.025), transparent 32%),
+    radial-gradient(circle at 50% 15%, rgba(255,255,255,.03), transparent 35%),
     linear-gradient(180deg, #070707 0%, #080808 48%, #060606 100%);
   isolation: isolate;
 }
 .site-ambient::after {
-  content: ""; position: absolute; inset: 0; z-index: 5; opacity: .48;
-  background: linear-gradient(180deg, transparent 0 42%, rgba(255,255,255,.015) 50%, transparent 58%);
+  content: ""; position: absolute; inset: 0; z-index: 5; opacity: .4;
+  background: linear-gradient(180deg, transparent 0 42%, rgba(255,255,255,.02) 50%, transparent 58%);
   background-size: 100% 18px;
   mix-blend-mode: soft-light;
 }
 .ambient-orb {
-  position: absolute; width: clamp(420px, 58vw, 980px); aspect-ratio: 1; border-radius: 50%;
-  opacity: .34; filter: blur(115px); mix-blend-mode: screen; will-change: transform, opacity;
+  position: absolute; width: clamp(480px, 48vw, 820px); aspect-ratio: 1; border-radius: 50%;
+  filter: blur(54px); mix-blend-mode: screen; will-change: transform, opacity;
 }
 .ambient-orb-blue {
-  top: -28%; left: -26%;
-  background: radial-gradient(circle, rgba(35,101,255,.92) 0%, rgba(35,101,255,.38) 33%, transparent 70%);
-  animation: ambientBlueDrift 12s ease-in-out infinite alternate;
+  top: -10%; left: -8%;
+  background: radial-gradient(circle, rgba(175,215,255,1) 0%, rgba(0,102,255,1) 22%, rgba(0,70,255,.6) 48%, transparent 74%);
+  animation: policeBlueFlash 3.2s cubic-bezier(.25,0,.25,1) infinite;
 }
 .ambient-orb-red {
-  top: 8%; right: -32%;
-  background: radial-gradient(circle, rgba(255,40,64,.78) 0%, rgba(255,40,64,.30) 34%, transparent 72%);
-  animation: ambientRedDrift 14s ease-in-out infinite alternate;
+  top: 6%; right: -8%;
+  background: radial-gradient(circle, rgba(255,190,205,1) 0%, rgba(255,0,45,1) 22%, rgba(255,0,45,.6) 48%, transparent 74%);
+  animation: policeRedFlash 3.2s cubic-bezier(.25,0,.25,1) infinite;
 }
 .ambient-orb-violet {
-  bottom: -44%; left: 26%; opacity: .19;
-  background: radial-gradient(circle, rgba(118,72,255,.72) 0%, rgba(57,120,255,.20) 38%, transparent 73%);
-  animation: ambientVioletDrift 17s ease-in-out infinite alternate;
+  bottom: -32%; left: 24%; opacity: .32; filter: blur(78px);
+  background: radial-gradient(circle, rgba(125,75,255,.88) 0%, rgba(57,120,255,.4) 42%, transparent 74%);
+  animation: ambientVioletDrift 14s ease-in-out infinite alternate;
 }
 .ambient-beam {
-  position: absolute; z-index: 3; width: 150vw; height: clamp(70px, 10vw, 150px); left: -25vw;
-  opacity: .23; filter: blur(28px); mix-blend-mode: screen; will-change: transform, opacity;
+  position: absolute; z-index: 3; width: 160vw; height: clamp(90px, 12vw, 175px); left: -30vw;
+  filter: blur(20px); mix-blend-mode: screen; will-change: transform, opacity;
 }
 .ambient-beam-one {
-  top: 20%;
-  background: linear-gradient(90deg, transparent 3%, rgba(38,104,255,.05) 19%, rgba(90,145,255,.55) 42%, rgba(255,255,255,.19) 50%, rgba(255,53,73,.50) 58%, rgba(255,53,73,.05) 80%, transparent 97%);
-  transform: rotate(-11deg) translateX(-24%);
-  animation: ambientBeamSweepOne 13s cubic-bezier(.4,0,.2,1) infinite;
+  top: 18%;
+  background: linear-gradient(90deg, transparent 2%, rgba(0,90,255,.1) 15%, rgba(0,130,255,.9) 42%, rgba(255,255,255,.65) 50%, rgba(255,0,50,.85) 58%, rgba(255,0,50,.1) 85%, transparent 98%);
+  transform: rotate(-10deg) translateX(-24%);
+  animation: policeBeamSweepOne 4.5s ease-in-out infinite alternate;
 }
 .ambient-beam-two {
-  bottom: 12%; opacity: .15;
-  background: linear-gradient(90deg, transparent 8%, rgba(255,48,68,.05) 22%, rgba(255,48,68,.45) 39%, rgba(255,255,255,.14) 50%, rgba(52,112,255,.48) 61%, rgba(52,112,255,.05) 80%, transparent 94%);
+  bottom: 14%;
+  background: linear-gradient(90deg, transparent 5%, rgba(255,0,50,.1) 18%, rgba(255,0,50,.85) 38%, rgba(255,255,255,.6) 50%, rgba(0,110,255,.9) 62%, rgba(0,110,255,.1) 82%, transparent 96%);
   transform: rotate(8deg) translateX(22%);
-  animation: ambientBeamSweepTwo 16s cubic-bezier(.4,0,.2,1) infinite;
+  animation: policeBeamSweepTwo 5.2s ease-in-out infinite alternate;
 }
 main { position: relative; z-index: 1; }
 
@@ -493,13 +493,37 @@ main { position: relative; z-index: 1; }
 
 :where(a,button,input,textarea):focus-visible { outline:2px solid var(--blue); outline-offset:4px; }
 
-@keyframes ambientBlueDrift { 0%{transform:translate3d(-8%,-5%,0) scale(.92);opacity:.25}45%{opacity:.46}100%{transform:translate3d(52%,42%,0) scale(1.18);opacity:.33} }
-@keyframes ambientRedDrift { 0%{transform:translate3d(8%,-12%,0) scale(1.06);opacity:.25}55%{opacity:.42}100%{transform:translate3d(-48%,54%,0) scale(.94);opacity:.31} }
+@keyframes policeBlueFlash {
+  0%, 100% { opacity: 0.28; transform: translate3d(0, 0, 0) scale(0.92); }
+  6% { opacity: 0.98; transform: translate3d(2%, 2%, 0) scale(1.18); }
+  12% { opacity: 0.35; transform: translate3d(0, 0, 0) scale(0.96); }
+  20% { opacity: 1.0; transform: translate3d(4%, 3%, 0) scale(1.24); }
+  28% { opacity: 0.25; transform: translate3d(2%, 1%, 0) scale(0.94); }
+  45%, 88% { opacity: 0.16; transform: translate3d(-3%, -2%, 0) scale(0.88); }
+}
+
+@keyframes policeRedFlash {
+  0%, 45% { opacity: 0.16; transform: translate3d(2%, -2%, 0) scale(0.88); }
+  52% { opacity: 0.98; transform: translate3d(-2%, 2%, 0) scale(1.18); }
+  58% { opacity: 0.35; transform: translate3d(0, 0, 0) scale(0.96); }
+  66% { opacity: 1.0; transform: translate3d(-4%, 3%, 0) scale(1.24); }
+  74% { opacity: 0.25; transform: translate3d(-2%, 1%, 0) scale(0.94); }
+  90%, 100% { opacity: 0.22; transform: translate3d(0, 0, 0) scale(0.9); }
+}
+
+@keyframes policeBeamSweepOne {
+  0% { transform: rotate(-12deg) translateX(-28%); opacity: 0.38; }
+  50% { opacity: 0.78; }
+  100% { transform: rotate(-8deg) translateX(24%); opacity: 0.42; }
+}
+
+@keyframes policeBeamSweepTwo {
+  0% { transform: rotate(9deg) translateX(24%); opacity: 0.32; }
+  50% { opacity: 0.72; }
+  100% { transform: rotate(6deg) translateX(-22%); opacity: 0.4; }
+}
+
 @keyframes ambientVioletDrift { 0%{transform:translate3d(-18%,8%,0) scale(.9)}100%{transform:translate3d(28%,-36%,0) scale(1.2)} }
-@keyframes ambientBeamSweepOne { 0%,12%{transform:rotate(-11deg) translateX(-34%);opacity:.08}38%{opacity:.28}60%{transform:rotate(-11deg) translateX(18%);opacity:.2}100%{transform:rotate(-11deg) translateX(34%);opacity:.06} }
-@keyframes ambientBeamSweepTwo { 0%{transform:rotate(8deg) translateX(28%);opacity:.06}35%{opacity:.18}70%{transform:rotate(8deg) translateX(-18%);opacity:.14}100%{transform:rotate(8deg) translateX(-32%);opacity:.05} }
-@keyframes ambientBlueMobile { 0%{transform:translate3d(-8%,-4%,0) scale(.95);opacity:.38}50%{opacity:.68}100%{transform:translate3d(20%,32%,0) scale(1.16);opacity:.48} }
-@keyframes ambientRedMobile { 0%{transform:translate3d(8%,-8%,0) scale(1.12);opacity:.36}50%{opacity:.65}100%{transform:translate3d(-18%,36%,0) scale(.94);opacity:.50} }
 @keyframes portraitSilverSweep { 0%{background-position:center,-80% 50%}100%{background-position:center,210% 50%} }
 @keyframes roundPortraitGlint { 0%{background-position:center,-90% 50%}100%{background-position:center,220% 50%} }
 @keyframes introGridFloat { 0%{transform:perspective(700px) rotateX(64deg) translateY(29%) translateX(-1%)}100%{transform:perspective(700px) rotateX(64deg) translateY(25%) translateX(1%)} }
@@ -540,24 +564,24 @@ main { position: relative; z-index: 1; }
 @media (max-width:768px){
   /* Police Ambient Lights Mobile Enhancement */
   .site-ambient { opacity: 1; }
-  .ambient-orb { width: min(85vw, 340px); filter: blur(48px); mix-blend-mode: screen; }
+  .ambient-orb { width: min(88vw, 360px); filter: blur(40px); mix-blend-mode: screen; }
   .ambient-orb-blue {
-    top: 2%; left: -14%; opacity: .62;
-    background: radial-gradient(circle, rgba(35,101,255,1) 0%, rgba(35,101,255,.48) 45%, transparent 72%);
-    animation: ambientBlueMobile 7s ease-in-out infinite alternate;
+    top: 1%; left: -10%;
+    background: radial-gradient(circle, rgba(175,215,255,1) 0%, rgba(0,102,255,1) 28%, rgba(0,70,255,.65) 52%, transparent 74%);
+    animation: policeBlueFlash 3s cubic-bezier(.25,0,.25,1) infinite;
   }
   .ambient-orb-red {
-    top: 24%; right: -14%; opacity: .56;
-    background: radial-gradient(circle, rgba(255,40,64,.98) 0%, rgba(255,40,64,.45) 45%, transparent 72%);
-    animation: ambientRedMobile 8s ease-in-out infinite alternate;
+    top: 20%; right: -10%;
+    background: radial-gradient(circle, rgba(255,190,205,1) 0%, rgba(255,0,45,1) 28%, rgba(255,0,45,.65) 52%, transparent 74%);
+    animation: policeRedFlash 3s cubic-bezier(.25,0,.25,1) infinite;
   }
   .ambient-orb-violet {
     bottom: -8%; left: 15%; opacity: .36; filter: blur(52px);
     animation: ambientVioletDrift 10s ease-in-out infinite alternate;
   }
-  .ambient-beam { width: 140vw; left: -20vw; filter: blur(18px); }
-  .ambient-beam-one { top: 12%; height: 75px; opacity: .42; animation: ambientBeamSweepOne 10s cubic-bezier(.4,0,.2,1) infinite; }
-  .ambient-beam-two { bottom: 18%; height: 70px; opacity: .32; animation: ambientBeamSweepTwo 12s cubic-bezier(.4,0,.2,1) infinite; }
+  .ambient-beam { width: 140vw; left: -20vw; filter: blur(16px); }
+  .ambient-beam-one { top: 10%; height: 80px; opacity: .55; animation: policeBeamSweepOne 4.2s ease-in-out infinite alternate; }
+  .ambient-beam-two { bottom: 16%; height: 75px; opacity: .45; animation: policeBeamSweepTwo 4.8s ease-in-out infinite alternate; }
 
   /* Section & UI Scale */
   .cursor-dot,.cursor-ring{display:none}

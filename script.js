@@ -494,62 +494,104 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* =====================================================
-     CINEMATIC PHOTO GLARE (Desktop Mouse & Mobile Touch)
+     CINEMATIC PHOTO GLARE (Desktop Mouse & Mobile Touch/Click)
   ====================================================== */
 
-  $$(".portrait-frame, .round-portrait").forEach((portrait) => {
-    let touchFadeTimer = null;
-
-    const setGlarePosition = (clientX, clientY) => {
-      const rect = portrait.getBoundingClientRect();
-      const x = Motion.clamp(((clientX - rect.left) / Math.max(rect.width, 1)) * 100, 0, 100);
-      const y = Motion.clamp(((clientY - rect.top) / Math.max(rect.height, 1)) * 100, 0, 100);
-      portrait.style.setProperty("--glare-x", `${x.toFixed(1)}%`);
-      portrait.style.setProperty("--glare-y", `${y.toFixed(1)}%`);
-    };
-
-    const activateGlare = (clientX, clientY) => {
-      if (touchFadeTimer) {
-        clearTimeout(touchFadeTimer);
-        touchFadeTimer = null;
+  const initPhotoGlare = () => {
+    const photoConfigs = [
+      {
+        host: $("#hangingCard"),
+        target: $(".portrait-frame"),
+        parentClass: "is-card-lit"
+      },
+      {
+        host: $(".about-portrait"),
+        target: $(".round-portrait"),
+        parentClass: "is-portrait-lit"
       }
-      portrait.classList.add("is-photo-lit");
-      setGlarePosition(clientX, clientY);
-    };
+    ];
 
-    const deactivateGlare = () => {
-      portrait.classList.remove("is-photo-lit");
-      portrait.style.setProperty("--glare-x", "50%");
-      portrait.style.setProperty("--glare-y", "50%");
-    };
+    photoConfigs.forEach(({ host, target, parentClass }) => {
+      const element = host || target;
+      const lightTarget = target || host;
+      if (!element || !lightTarget) return;
 
-    // Desktop Mouse Events
-    portrait.addEventListener("mouseenter", (e) => activateGlare(e.clientX, e.clientY));
-    portrait.addEventListener("mousemove", Motion.rafThrottle((e) => setGlarePosition(e.clientX, e.clientY)));
-    portrait.addEventListener("mouseleave", deactivateGlare);
+      let holdTimer = null;
 
-    // Mobile / Tablet Touch Events (Jempol / Jari)
-    portrait.addEventListener("touchstart", (e) => {
-      if (e.touches && e.touches[0]) {
-        activateGlare(e.touches[0].clientX, e.touches[0].clientY);
-      }
-    }, { passive: true });
+      const updateCoordinates = (clientX, clientY) => {
+        const rect = lightTarget.getBoundingClientRect();
+        const x = Motion.clamp(((clientX - rect.left) / Math.max(rect.width, 1)) * 100, 0, 100);
+        const y = Motion.clamp(((clientY - rect.top) / Math.max(rect.height, 1)) * 100, 0, 100);
+        lightTarget.style.setProperty("--glare-x", `${x.toFixed(1)}%`);
+        lightTarget.style.setProperty("--glare-y", `${y.toFixed(1)}%`);
+      };
 
-    portrait.addEventListener("touchmove", Motion.rafThrottle((e) => {
-      if (e.touches && e.touches[0]) {
-        activateGlare(e.touches[0].clientX, e.touches[0].clientY);
-      }
-    }), { passive: true });
+      const igniteGlare = (clientX, clientY, autoHoldMs = 0) => {
+        if (holdTimer) {
+          clearTimeout(holdTimer);
+          holdTimer = null;
+        }
+        lightTarget.classList.add("is-photo-lit");
+        if (host && parentClass) host.classList.add(parentClass);
+        if (typeof clientX === "number" && typeof clientY === "number") {
+          updateCoordinates(clientX, clientY);
+        }
+        if (autoHoldMs > 0) {
+          holdTimer = setTimeout(dimGlare, autoHoldMs);
+        }
+      };
 
-    portrait.addEventListener("touchend", () => {
-      // Glow stays for a moment after lifting thumb for premium cinematic feedback
-      touchFadeTimer = setTimeout(() => {
-        deactivateGlare();
-      }, 700);
+      const dimGlare = () => {
+        lightTarget.classList.remove("is-photo-lit");
+        if (host && parentClass) host.classList.remove(parentClass);
+        lightTarget.style.setProperty("--glare-x", "50%");
+        lightTarget.style.setProperty("--glare-y", "50%");
+      };
+
+      // Pointer events for modern touch & mouse
+      element.addEventListener("pointerdown", (e) => {
+        igniteGlare(e.clientX, e.clientY, 3500);
+      });
+
+      element.addEventListener("pointermove", Motion.rafThrottle((e) => {
+        if (lightTarget.classList.contains("is-photo-lit")) {
+          updateCoordinates(e.clientX, e.clientY);
+        }
+      }));
+
+      element.addEventListener("pointerenter", (e) => {
+        if (e.pointerType === "mouse") {
+          igniteGlare(e.clientX, e.clientY);
+        }
+      });
+
+      element.addEventListener("pointerleave", (e) => {
+        if (e.pointerType === "mouse") {
+          dimGlare();
+        }
+      });
+
+      // Mobile Touch listeners
+      element.addEventListener("touchstart", (e) => {
+        if (e.touches && e.touches[0]) {
+          igniteGlare(e.touches[0].clientX, e.touches[0].clientY, 3500);
+        }
+      }, { passive: true });
+
+      element.addEventListener("touchmove", Motion.rafThrottle((e) => {
+        if (e.touches && e.touches[0]) {
+          updateCoordinates(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }), { passive: true });
+
+      // Click / Tap
+      element.addEventListener("click", (e) => {
+        igniteGlare(e.clientX, e.clientY, 3500);
+      });
     });
+  };
 
-    portrait.addEventListener("touchcancel", deactivateGlare);
-  });
+  initPhotoGlare();
 
   /* Scroll-linked floating motion. */
   const updateParallax = Motion.rafThrottle(() => {

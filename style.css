@@ -280,26 +280,34 @@ main { position: relative; z-index: 1; }
 .hanger-pin { position:absolute; top:0; left:50%; width:11px; height:11px; border:2px solid var(--text); border-radius:50%; transform:translateX(-50%); }
 .hanger-line { position:absolute; top:11px; left:50%; width:2px; height:212px; background:linear-gradient(var(--muted),var(--text)); transform:translateX(-50%); }
 .hanger-clip { position:absolute; bottom:0; left:50%; width:24px; height:37px; border:2px solid var(--text); border-radius:7px; background:var(--bg); transform:translateX(-50%); }
-.hanging-card { position:relative; z-index:4; width:min(100%,280px); padding:12px 12px 20px; color:#111; background:#efefe9; box-shadow:0 45px 100px rgba(0,0,0,.58); transform:rotate(6deg); transform-style:preserve-3d; animation:hanging 5.6s ease-in-out infinite; }
+.hanging-card {
+  position:relative; z-index:4; width:min(100%,280px); padding:12px 12px 20px; color:#111; background:#efefe9;
+  box-shadow:0 45px 100px rgba(0,0,0,.58); transform:rotate(6deg); transform-style:preserve-3d;
+  animation:hanging 5.6s ease-in-out infinite; cursor:pointer;
+  transition:box-shadow .4s var(--ease), transform .4s var(--ease);
+}
+.hanging-card.is-card-lit {
+  box-shadow:0 45px 100px rgba(0,0,0,.6), 0 0 50px rgba(0,102,255,.6), 0 0 25px rgba(255,0,45,.45);
+}
 .portrait-frame {
   --glare-x: 50%; --glare-y: 50%;
   position:relative; height:360px; overflow:hidden; background:#111; isolation:isolate;
 }
 .portrait-frame img {
   width:100%; height:100%; object-fit:cover; filter:grayscale(1) contrast(1.04);
-  transition:filter .55s var(--ease),transform .75s var(--ease); will-change:transform,filter;
+  transition:filter .45s var(--ease),transform .65s var(--ease); will-change:transform,filter;
 }
 .portrait-frame::before {
   content:""; position:absolute; inset:-18%; z-index:4; pointer-events:none; opacity:0;
   background:
-    radial-gradient(circle at var(--glare-x) var(--glare-y), rgba(255,255,255,.95) 0 1.5%, rgba(159,196,255,.52) 6%, rgba(57,120,255,.22) 13%, transparent 29%),
-    linear-gradient(112deg, transparent 28%, rgba(255,255,255,.03) 39%, rgba(255,255,255,.68) 48%, rgba(107,156,255,.18) 54%, transparent 66%);
+    radial-gradient(circle at var(--glare-x) var(--glare-y), rgba(255,255,255,1) 0 2%, rgba(159,196,255,.75) 8%, rgba(0,102,255,.4) 18%, transparent 34%),
+    linear-gradient(112deg, transparent 25%, rgba(255,255,255,.05) 36%, rgba(255,255,255,.85) 48%, rgba(107,156,255,.35) 56%, transparent 68%);
   background-size:100% 100%, 45% 160%; background-position:center, -80% 50%; background-repeat:no-repeat;
-  mix-blend-mode:screen; filter:blur(.3px); transition:opacity .28s var(--ease); transform:translateZ(35px);
+  mix-blend-mode:screen; filter:blur(.2px); transition:opacity .25s var(--ease); transform:translateZ(35px);
 }
 .portrait-frame::after { content:""; position:absolute; inset:0; z-index:3; background:linear-gradient(to top,rgba(0,0,0,.33),transparent 45%); pointer-events:none; }
-.portrait-frame.is-photo-lit::before { opacity:.92; animation:portraitSilverSweep 1.15s var(--ease) both; }
-.portrait-frame.is-photo-lit img { filter:grayscale(.42) contrast(1.12) brightness(1.08); transform:scale(1.025); }
+.portrait-frame.is-photo-lit::before { opacity:1; animation:portraitSilverSweep 1.15s var(--ease) both; }
+.portrait-frame.is-photo-lit img { filter:grayscale(0) contrast(1.12) brightness(1.12); transform:scale(1.035); }
 .portrait-scan { position:absolute; top:-40%; right:0; left:0; z-index:2; height:35%; background:linear-gradient(to bottom,transparent,rgba(255,255,255,.13),transparent); animation:scan 4s linear infinite; }
 .portrait-label { position:absolute; right:10px; bottom:10px; z-index:3; color:rgba(255,255,255,.65); font:400 .42rem "IBM Plex Mono", monospace; }
 .card-signature { display:grid; margin-top:12px; line-height:1.2; }
@@ -326,36 +334,36 @@ main { position: relative; z-index: 1; }
 .button-primary:hover { box-shadow:0 18px 45px rgba(255,255,255,.12); }
 .button-secondary { border:1px solid var(--line); background:var(--panel); }
 .button-secondary:hover { border-color:var(--line-strong); background:var(--panel-strong); }
-.about-portrait { position:relative; display:grid; min-height:440px; place-items:center; }
+.about-portrait { position:relative; display:grid; min-height:440px; place-items:center; cursor:pointer; }
 .round-portrait {
   --glare-x: 50%; --glare-y: 50%;
   position:relative; z-index:3; width:260px; height:260px; overflow:hidden; border:1px solid var(--line-strong); border-radius:50%;
   box-shadow:0 35px 85px rgba(0,0,0,.5),0 0 0 0 rgba(57,120,255,0); transform-style:preserve-3d; isolation:isolate;
-  transition:border-color .35s var(--ease),box-shadow .45s var(--ease);
+  transition:border-color .35s var(--ease),box-shadow .45s var(--ease); cursor:pointer;
 }
 .round-portrait img {
   width:100%; height:100%; object-fit:cover; filter:grayscale(1) contrast(1.08);
-  transition:filter .5s var(--ease),transform .7s var(--ease); will-change:transform,filter;
+  transition:filter .45s var(--ease),transform .65s var(--ease); will-change:transform,filter;
 }
 .round-portrait::before {
   content:""; position:absolute; inset:-8%; z-index:5; border-radius:50%; pointer-events:none; opacity:0;
   background:
-    radial-gradient(circle at var(--glare-x) var(--glare-y), rgba(255,255,255,.98) 0 1.8%, rgba(183,211,255,.55) 7%, rgba(57,120,255,.23) 15%, transparent 31%),
-    linear-gradient(118deg, transparent 28%, rgba(255,255,255,.03) 38%, rgba(255,255,255,.68) 47%, rgba(80,136,255,.25) 53%, transparent 65%);
+    radial-gradient(circle at var(--glare-x) var(--glare-y), rgba(255,255,255,1) 0 2%, rgba(183,211,255,.75) 8%, rgba(0,102,255,.4) 18%, transparent 35%),
+    linear-gradient(118deg, transparent 25%, rgba(255,255,255,.05) 36%, rgba(255,255,255,.85) 48%, rgba(80,136,255,.4) 56%, transparent 68%);
   background-size:100% 100%,55% 150%; background-position:center,-90% 50%; background-repeat:no-repeat;
   mix-blend-mode:screen; transition:opacity .25s var(--ease); transform:translateZ(38px);
 }
 .round-portrait::after {
   content:""; position:absolute; inset:0; z-index:6; border-radius:50%; pointer-events:none; opacity:0;
-  border:1px solid rgba(135,177,255,.72); box-shadow:inset 0 0 28px rgba(57,120,255,.26),0 0 24px rgba(57,120,255,.28),0 0 58px rgba(255,55,76,.12);
+  border:1px solid rgba(135,177,255,.9); box-shadow:inset 0 0 30px rgba(0,102,255,.4),0 0 35px rgba(0,102,255,.5),0 0 65px rgba(255,0,45,.35);
   transition:opacity .3s var(--ease);
 }
 .round-portrait-shade { position:absolute; inset:0; z-index:2; background:linear-gradient(110deg,transparent 42%,rgba(0,0,0,.72) 43%); transition:opacity .4s var(--ease); pointer-events:none; }
-.round-portrait.is-photo-lit { border-color:rgba(139,180,255,.72); box-shadow:0 35px 85px rgba(0,0,0,.5),-18px 0 60px rgba(57,120,255,.17),18px 0 65px rgba(255,53,73,.11); }
-.round-portrait.is-photo-lit::before { opacity:.95; animation:roundPortraitGlint 1.35s var(--ease) both; }
+.round-portrait.is-photo-lit { border-color:rgba(139,180,255,.95); box-shadow:0 35px 85px rgba(0,0,0,.5),-20px 0 65px rgba(0,102,255,.5),20px 0 70px rgba(255,0,45,.4); }
+.round-portrait.is-photo-lit::before { opacity:1; animation:roundPortraitGlint 1.35s var(--ease) both; }
 .round-portrait.is-photo-lit::after { opacity:1; }
-.round-portrait.is-photo-lit img { filter:grayscale(.28) contrast(1.12) brightness(1.1); transform:scale(1.045); }
-.round-portrait.is-photo-lit .round-portrait-shade { opacity:.48; }
+.round-portrait.is-photo-lit img { filter:grayscale(0) contrast(1.15) brightness(1.12); transform:scale(1.055); }
+.round-portrait.is-photo-lit .round-portrait-shade { opacity:.25; }
 .portrait-orbit { position:absolute; border:1px solid var(--line); border-radius:50%; }
 .orbit-one { width:355px; height:355px; animation:spin 26s linear infinite; }
 .orbit-two { width:430px; height:430px; border-style:dashed; animation:spin 38s linear infinite reverse; }

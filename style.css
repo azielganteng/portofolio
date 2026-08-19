@@ -499,6 +499,13 @@ main { position: relative; z-index: 1; }
 .certificate-modal-dialog { position:absolute; top:50%; left:50%; width:min(calc(100% - 24px),900px); padding:18px; border:1px solid var(--line); border-radius:18px; background:#0b0b0b; opacity:0; transform:translate(-50%,-45%) scale(.96); transition:opacity .4s var(--ease),transform .4s var(--ease); }
 .certificate-modal.is-open .certificate-modal-dialog{opacity:1;transform:translate(-50%,-50%) scale(1)}.certificate-modal-dialog img{width:100%;max-height:75vh;object-fit:contain}.certificate-modal-dialog p{margin-top:11px;color:var(--muted);font-size:.62rem}.certificate-modal-dialog code{color:var(--text)}.certificate-modal-close{position:absolute;top:-14px;right:-14px;z-index:3;width:40px;height:40px;border:1px solid var(--line);border-radius:50%;color:var(--text);background:#111;cursor:pointer;font-size:1rem}
 
+.cv-modal-dialog { max-width:620px; max-height:92vh; display:flex; flex-direction:column; padding:20px; gap:14px; }
+.cv-modal-header { display:flex; justify-content:space-between; align-items:center; padding-bottom:10px; border-bottom:1px solid var(--line); }
+.cv-modal-header h3 { font-size:1.15rem; font-family:"Space Grotesk", sans-serif; margin-top:2px; }
+.cv-modal-body { overflow:auto; border-radius:12px; background:#000; max-height:65vh; display:flex; justify-content:center; }
+.cv-modal-body img { width:100%; max-height:65vh; object-fit:contain; border-radius:8px; }
+.cv-modal-footer { display:flex; flex-wrap:wrap; gap:10px; justify-content:flex-end; padding-top:10px; border-top:1px solid var(--line); }
+
 :where(a,button,input,textarea):focus-visible { outline:2px solid var(--blue); outline-offset:4px; }
 
 @keyframes policeBlueFlash {

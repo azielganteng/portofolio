@@ -29,9 +29,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=2.5" />
-  <script src="motion.js?v=2.5" defer></script>
-  <script src="script.js?v=2.5" defer></script>
+  <link rel="stylesheet" href="style.css?v=2.6" />
+  <script src="motion.js?v=2.6" defer></script>
+  <script src="script.js?v=2.6" defer></script>
 </head>
 <body class="is-loading">
   <div class="preloader" id="preloader" aria-hidden="true">
@@ -485,6 +485,31 @@
       <button class="certificate-modal-close" type="button" data-close-certificate aria-label="Tutup">×</button>
       <img id="certModalImage" src="assets/images/sertifikat.jpg" alt="Pratinjau sertifikat" />
       <p id="certModalCaption">Pratinjau sertifikat pencapaian dan pembelajaran.</p>
+    </div>
+  </div>
+
+  <!-- CV Preview Modal -->
+  <div class="certificate-modal cv-modal" id="cvModal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Curriculum Vitae Muhammad Aziel">
+    <button class="project-modal-backdrop" type="button" data-close-cv aria-label="Tutup CV"></button>
+    <div class="certificate-modal-dialog cv-modal-dialog">
+      <div class="cv-modal-header">
+        <div>
+          <span class="section-kicker">CURRICULUM VITAE</span>
+          <h3>Muhammad Aziel Akbar Santoso</h3>
+        </div>
+        <button class="certificate-modal-close" type="button" data-close-cv aria-label="Tutup">×</button>
+      </div>
+      <div class="cv-modal-body">
+        <img id="cvModalImage" src="assets/images/cv-aziel.jpg" alt="CV Muhammad Aziel Akbar Santoso" />
+      </div>
+      <div class="cv-modal-footer">
+        <a href="assets/images/cv-aziel.jpg" download="CV_Muhammad_Aziel_Akbar_Santoso.jpg" class="button button-primary magnetic">
+          <span>Download CV (HD)</span><i>↓</i>
+        </a>
+        <a href="assets/images/cv-aziel.jpg" target="_blank" rel="noopener noreferrer" class="button button-secondary magnetic">
+          <span>Buka Layar Penuh</span><i>↗</i>
+        </a>
+      </div>
     </div>
   </div>
 </body>

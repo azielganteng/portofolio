@@ -849,8 +849,38 @@ document.addEventListener("DOMContentLoaded", () => {
   $$('[data-close-certificate]').forEach((button) => button.addEventListener("click", closeCertificateModal));
 
   /* =====================================================
-     CONTACT FORM (Formspree AJAX & Demo Fallback)
+     CV PREVIEW MODAL
   ====================================================== */
+
+  const cvModal = $("#cvModal");
+  const downloadCvBtn = $("#downloadCv");
+  let lastCvTrigger = null;
+
+  function openCvModal(trigger) {
+    if (!cvModal) return;
+    lastCvTrigger = trigger || document.activeElement;
+    cvModal.classList.add("is-open");
+    cvModal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+    window.setTimeout(() => $("[data-close-cv]", cvModal)?.focus(), 120);
+  }
+
+  function closeCvModal() {
+    if (!cvModal?.classList.contains("is-open")) return;
+    cvModal.classList.remove("is-open");
+    cvModal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+    lastCvTrigger?.focus?.();
+  }
+
+  if (downloadCvBtn) {
+    downloadCvBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      openCvModal(downloadCvBtn);
+    });
+  }
+
+  $$('[data-close-cv]').forEach((button) => button.addEventListener("click", closeCvModal));
 
   const contactForm = $("#contactForm");
   const formStatus = $("#formStatus");
@@ -979,31 +1009,5 @@ document.addEventListener("DOMContentLoaded", () => {
     renderComments();
     commentForm.reset();
     createToast("Komentar tersimpan di browser ini.");
-  });
-
-  /* =====================================================
-     DOWNLOAD CV PLACEHOLDER
-  ====================================================== */
-
-  $("#downloadCv")?.addEventListener("click", (event) => {
-    event.preventDefault();
-    const content = [
-      "MUHAMMAD AZIEL AKBAR SANTOSO",
-      "Rekayasa Perangkat Lunak — SMKN 1 Sukorejo",
-      "Backend Developer Intern — Aziel Software House",
-      "",
-      "Skills: Laravel, PHP, MySQL, REST API, Postman, Git",
-      "Project: Todo REST API",
-      "",
-      "Ganti file ini dengan CV PDF asli milik Anda.",
-    ].join("\n");
-    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = "CV_Muhammad_Aziel.txt";
-    anchor.click();
-    URL.revokeObjectURL(url);
-    createToast("CV placeholder diunduh. Ganti dengan CV PDF asli nanti.");
   });
 });

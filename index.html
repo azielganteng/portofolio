@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Portfolio Muhammad Aziel Akbar Santoso, siswa Rekayasa Perangkat Lunak SMKN 1 Sukorejo dan Backend Developer Intern di Aziel Software House." />
+  <meta name="author" content="Muhammad Aziel Akbar Santoso" />
+  <meta name="keywords" content="Muhammad Aziel, Backend Developer, Laravel, PHP, REST API, Portfolio, SMKN 1 Sukorejo, Web Developer" />
+  <meta name="theme-color" content="#070707" />
+  <title>Muhammad Aziel — Backend Developer Portfolio</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="assets/images/foto1.jpeg" />
+  <link rel="apple-touch-icon" href="assets/images/foto1.jpeg" />
+
+  <!-- Open Graph / Facebook / LinkedIn / WhatsApp -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Muhammad Aziel — Backend Developer Portfolio" />
+  <meta property="og:description" content="Portfolio Muhammad Aziel Akbar Santoso — Siswa Rekayasa Perangkat Lunak SMKN 1 Sukorejo & Backend Developer Intern di Aziel Software House." />
+  <meta property="og:image" content="assets/images/foto1.jpeg" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Muhammad Aziel — Backend Developer Portfolio" />
+  <meta name="twitter:description" content="Portfolio Muhammad Aziel Akbar Santoso — Backend Developer Intern di Aziel Software House." />
+  <meta name="twitter:image" content="assets/images/foto1.jpeg" />
+
+  <!-- Fonts & Styles -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="motion.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body class="is-loading">
+  <div class="preloader" id="preloader" aria-hidden="true">
+    <div class="preloader-grid"></div>
+    <div class="preloader-aurora preloader-aurora-one"></div>
+    <div class="preloader-aurora preloader-aurora-two"></div>
+    <div class="preloader-depth-rings" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="preloader-light-trail preloader-light-trail-one"></div>
+    <div class="preloader-light-trail preloader-light-trail-two"></div>
+    <div class="preloader-beam"></div>
+    <div class="preloader-cursor"></div>
+
+    <div class="preloader-content">
+      <div class="preloader-topline">
+        <span><i></i> AZIEL.DEV</span>
+        <span>PORTFOLIO / 2026</span>
+      </div>
+
+      <div class="preloader-core" aria-hidden="true">
+        <span class="preloader-core-ring"></span>
+        <span class="preloader-core-dot"></span>
+      </div>
+
+      <p class="preloader-kicker">WELCOME TO THE EXPERIENCE</p>
+
+      <div class="preloader-title-shell">
+        <span class="preloader-title-aura" aria-hidden="true"></span>
+        <h1 class="preloader-title" aria-label="Welcome to my Portfolio Website">
+          <span class="preloader-title-line" aria-hidden="true">
+            <span class="intro-word" data-intro-word>Welcome</span>
+            <span class="intro-word intro-word-soft" data-intro-word>to</span>
+            <span class="intro-word intro-word-soft" data-intro-word>my</span>
+          </span>
+          <span class="preloader-title-line preloader-title-line-accent" aria-hidden="true">
+            <span class="intro-word" data-intro-word>Portfolio</span>
+            <span class="intro-word" data-intro-word>Website</span>
+          </span>
+        </h1>
+        <span class="preloader-light-sweep" aria-hidden="true"></span>
+        <span class="preloader-title-line-glow" aria-hidden="true"></span>
+      </div>
+
+      <p class="preloader-subtitle">Backend ideas, digital systems, and a journey built one line of code at a time.</p>
+
+      <div class="preloader-progress-wrap">
+        <div class="preloader-track"><span id="preloaderBar"></span></div>
+        <div class="preloader-meta">
+          <span id="preloaderState">ENTERING DIGITAL SPACE</span>
+          <strong id="preloaderValue">00%</strong>
+        </div>
+      </div>
+
+      <div class="preloader-tags" aria-hidden="true">
+        <span>BACKEND</span><span>API</span><span>DATABASE</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-transition" id="pageTransition" aria-hidden="true">
+    <span></span>
+  </div>
+
+  <div class="site-ambient" aria-hidden="true">
+    <span class="ambient-orb ambient-orb-blue"></span>
+    <span class="ambient-orb ambient-orb-red"></span>
+    <span class="ambient-orb ambient-orb-violet"></span>
+    <span class="ambient-beam ambient-beam-one"></span>
+    <span class="ambient-beam ambient-beam-two"></span>
+  </div>
+  <div class="site-noise" aria-hidden="true"></div>
+  <div class="cursor-dot" aria-hidden="true"></div>
+  <div class="cursor-ring" aria-hidden="true"></div>
+  <div class="scroll-progress" aria-hidden="true"><span></span></div>
+
+  <header class="site-header" id="siteHeader">
+    <a class="brand magnetic" href="#home" aria-label="Kembali ke halaman utama">
+      <span class="brand-mark">A</span>
+      <span class="brand-text">aziel.dev</span>
+    </a>
+
+    <nav class="desktop-nav" aria-label="Navigasi utama">
+      <a href="#home" class="active">Home</a>
+      <a href="#about">About</a>
+      <a href="#showcase">Portfolio</a>
+      <a href="#contact">Contact</a>
+    </nav>
+
+    <div class="header-actions">
+      <span class="availability"><i></i> Available</span>
+      <a href="#contact" class="header-contact magnetic" aria-label="Hubungi Aziel">↗</a>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Buka menu" aria-controls="mobileMenu" aria-expanded="false">
+        <span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <aside class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <button class="mobile-menu-backdrop" type="button" data-menu-close aria-label="Tutup menu"></button>
+    <div class="mobile-menu-panel">
+      <div class="mobile-menu-top">
+        <span>MENU / NAVIGATION</span>
+        <button type="button" data-menu-close aria-label="Tutup menu">×</button>
+      </div>
+      <nav class="mobile-nav" aria-label="Navigasi seluler">
+        <a href="#home" data-menu-link><small>01</small>Home</a>
+        <a href="#about" data-menu-link><small>02</small>About</a>
+        <a href="#showcase" data-menu-link><small>03</small>Portfolio</a>
+        <a href="#contact" data-menu-link><small>04</small>Contact</a>
+      </nav>
+      <div class="mobile-menu-bottom">
+        <span>Muhammad Aziel Akbar Santoso</span>
+        <span>Backend Intern · Indonesia</span>
+      </div>
+    </div>
+  </aside>
+
+  <main>
+    <section class="hero section" id="home" data-section="home">
+      <div class="grid-bg" aria-hidden="true"></div>
+      <div class="hero-spotlight" aria-hidden="true"></div>
+
+      <div class="hero-copy">
+        <p class="section-kicker reveal" data-delay="0">HELLO, I AM</p>
+        <h1 class="hero-title" data-split="lines">
+          <span>Backend</span>
+          <span class="muted-line">Developer</span>
+        </h1>
+
+        <p class="hero-description reveal" data-delay="180">
+          Seorang siswa <strong>Rekayasa Perangkat Lunak</strong> yang sedang
+          membangun fondasi backend melalui Laravel, REST API, dan database.
+        </p>
+
+        <div class="hero-meta reveal" data-delay="260">
+          <span>Experience</span>
+          <span>Backend Intern</span>
+          <span>Tech Enthusiast</span>
+        </div>
+
+        <div class="hero-code reveal" data-delay="320" aria-label="Cuplikan kode">
+          <span>&gt; request enters the route</span>
+          <span>&gt; controller handles the logic</span>
+          <span>&gt; response returns meaningful data_</span>
+        </div>
+      </div>
+
+      <div class="hanging-stage reveal-scale" id="hangingStage">
+        <div class="hanger" aria-hidden="true">
+          <span class="hanger-pin"></span>
+          <span class="hanger-line"></span>
+          <span class="hanger-clip"></span>
+        </div>
+
+        <article class="hanging-card tilt-card" id="hangingCard">
+          <div class="portrait-frame">
+            <img src="assets/images/foto1.jpeg" alt="Avatar ilustrasi Muhammad Aziel" />
+            <span class="portrait-scan"></span>
+            <div class="portrait-label">BACKEND / 2026</div>
+          </div>
+          <div class="card-signature">
+            <strong>Leizaa</strong>
+            <span>SMKN 1 Sukorejo</span>
+          </div>
+        </article>
+      </div>
+
+      <div class="hero-scroll-label" aria-hidden="true">
+        <span>SCROLL TO EXPLORE</span><i></i>
+      </div>
+
+      <div class="hero-index" aria-hidden="true">
+        <span>01</span>
+        <span>BACKEND PORTFOLIO</span>
+      </div>
+    </section>
+
+    <section class="about section" id="about" data-section="about">
+      <div class="grid-bg grid-soft" aria-hidden="true"></div>
+
+      <div class="about-heading">
+        <p class="section-kicker reveal">ABOUT ME</p>
+        <h2 data-split="lines">
+          <span>Muhammad</span>
+          <span>Aziel Akbar</span>
+          <span>Santoso</span>
+        </h2>
+      </div>
+
+      <div class="about-main">
+        <div class="about-content reveal-left">
+          <p class="about-lead">
+            Saya adalah siswa SMK yang tertarik pada cara kerja sistem di balik layar—bagaimana data masuk, diproses, diamankan, dan dikembalikan menjadi response yang berguna.
+          </p>
+          <p>
+            Saat ini saya menjalani PKL sebagai <strong>Backend Developer Intern di Aziel Software House</strong>. Saya belajar Laravel, PHP, MySQL, authentication, authorization, validation, search, filter, dan debugging melalui project nyata.
+          </p>
+
+          <blockquote>
+            “Yang saya kejar bukan sekadar kode yang berjalan, tetapi alur yang benar-benar saya pahami.”
+          </blockquote>
+
+          <div class="about-actions">
+            <a href="#" class="button button-primary magnetic" id="downloadCv">
+              <span>Download CV</span><i>↓</i>
+            </a>
+            <a href="#showcase" class="button button-secondary magnetic">
+              <span>View Projects</span><i>↗</i>
+            </a>
+          </div>
+        </div>
+
+        <div class="about-portrait reveal-right">
+          <div class="portrait-orbit orbit-one"></div>
+          <div class="portrait-orbit orbit-two"></div>
+          <div class="round-portrait tilt-card">
+            <img src="assets/images/foto2.jpeg" alt="Avatar ilustrasi Muhammad Aziel" />
+            <div class="round-portrait-shade"></div>
+          </div>
+          <span class="portrait-note">BACKEND STUDENT<br />IN PROGRESS</span>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <article class="stat-card reveal" data-delay="0">
+          <div class="stat-icon">◇</div>
+          <strong class="counter" data-target="2">0</strong>
+          <span>FEATURED PROJECTS</span>
+          <p>Aplikasi web &amp; REST API yang dibangun dengan arsitektur terstruktur.</p>
+        </article>
+
+        <article class="stat-card reveal" data-delay="80">
+          <div class="stat-icon">⌘</div>
+          <strong class="counter" data-target="8">0</strong>
+          <span>CORE TECHNOLOGIES</span>
+          <p>Teknologi utama backend dan database yang dikuasai.</p>
+        </article>
+
+        <article class="stat-card reveal" data-delay="160">
+          <div class="stat-icon">◎</div>
+          <strong class="counter" data-target="100">0</strong>
+          <span>COMMITTED TO EXCELLENCE</span>
+          <p>Fokus pada clean code, keamanan API, dan efisiensi query database.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="showcase section" id="showcase" data-section="showcase">
+      <div class="grid-bg grid-soft" aria-hidden="true"></div>
+
+      <div class="showcase-heading">
+        <p class="section-kicker reveal">SELECTED WORKS</p>
+        <h2 data-split="lines"><span>Portfolio Showcase</span></h2>
+        <p class="reveal" data-delay="130">
+          Jelajahi project, sertifikat, dan teknologi yang menjadi bagian dari perjalanan belajar saya.
+        </p>
+      </div>
+
+      <div class="showcase-tabs reveal" role="tablist" aria-label="Kategori portfolio">
+        <button class="showcase-tab active" type="button" role="tab" aria-selected="true" data-tab="projects">Projects</button>
+        <button class="showcase-tab" type="button" role="tab" aria-selected="false" data-tab="certificates">Certificates</button>
+        <button class="showcase-tab" type="button" role="tab" aria-selected="false" data-tab="stack">Tech Stack</button>
+      </div>
+
+      <div class="showcase-panels">
+        <div class="showcase-panel active" id="projectsPanel" data-panel="projects" role="tabpanel">
+          <div class="project-grid">
+            <article class="project-card reveal tilt-card" data-project="todo-api">
+              <div class="project-preview project-preview-todo">
+                <div class="preview-browser">
+                  <div class="preview-browser-top">
+                    <div><i></i><i></i><i></i></div>
+                    <span>localhost:8000/api/todos</span>
+                  </div>
+                  <div class="preview-browser-body">
+                    <div class="mini-title"><span>Backend</span><strong>Developer</strong></div>
+                    <div class="mini-polaroid"><img src="assets/images/foto3.jpeg" alt="" /></div>
+                    <div class="mini-request"><b>GET</b><span>/api/todos</span><em>200</em></div>
+                  </div>
+                </div>
+              </div>
+              <div class="project-body">
+                <span class="project-type">LARAVEL · REST API</span>
+                <h3>Todo REST API</h3>
+                <p>CRUD API dengan authentication, authorization, validation, search, dan filter status.</p>
+                <div class="project-footer">
+                  <div class="project-tags"><span>Laravel</span><span>MySQL</span><span>Postman</span></div>
+                  <button type="button" class="project-detail" data-open-project="todo-api">Details <i>↗</i></button>
+                </div>
+              </div>
+            </article>
+
+            <article class="project-card reveal tilt-card" data-project="booking-lapangan" data-delay="110">
+              <div class="project-preview project-preview-booking">
+                <div class="preview-browser">
+                  <div class="preview-browser-top">
+                    <div><i></i><i></i><i></i></div>
+                    <span>booking-lapangan.up.railway.app</span>
+                  </div>
+                  <div class="preview-browser-body preview-booking-body">
+                    <div class="booking-badge-row">
+                      <span class="booking-status-tag">● LIVE APP</span>
+                      <span class="booking-court-pill">⚽ FUTSAL &amp; BADMINTON</span>
+                    </div>
+                    <div class="booking-mock-grid">
+                      <div class="booking-slot is-available"><span>08:00 - 10:00</span><strong>Available</strong></div>
+                      <div class="booking-slot is-booked"><span>10:00 - 12:00</span><strong>Booked</strong></div>
+                      <div class="booking-slot is-available"><span>14:00 - 16:00</span><strong>Available</strong></div>
+                      <div class="booking-slot is-booked"><span>19:00 - 21:00</span><strong>Booked</strong></div>
+                    </div>
+                    <div class="mini-request">
+                      <b>POST</b><span>/booking/store (Anti-Conflict)</span><em>200 OK</em>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="project-body">
+                <span class="project-type">LARAVEL · FULLSTACK / PRODUCTION</span>
+                <h3>Sport Court Booking Platform</h3>
+                <p>Sistem reservasi lapangan olahraga online dengan pemilihan slot waktu real-time, validasi jadwal anti-bentrok, dan manajemen status booking.</p>
+                <div class="project-footer">
+                  <div class="project-tags"><span>Laravel</span><span>MySQL</span><span>Blade</span><span>Railway</span></div>
+                  <div class="project-actions">
+                    <a href="https://booking-lapangan-production.up.railway.app/" target="_blank" rel="noopener noreferrer" class="project-live-link" aria-label="Buka live demo Booking Lapangan">Demo <i>↗</i></a>
+                    <button type="button" class="project-detail" data-open-project="booking-lapangan">Details <i>↗</i></button>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="showcase-panel" id="certificatesPanel" data-panel="certificates" role="tabpanel" hidden>
+          <div class="certificate-grid">
+            <button class="certificate-card reveal" type="button" data-certificate="latika" data-cert-img="assets/images/sertifikat.jpg" data-cert-title="Sertifikat Latika Website" data-cert-desc="Sertifikat kontribusi dan pengembangan modul website Latika.">
+              <div class="certificate-image"><img src="assets/images/sertifikat.jpg" alt="Sertifikat Latika Website" /></div>
+              <div class="certificate-info"><span>VERIFIED</span><h3>Sertifikat Latika Website</h3><p>Pengembangan & Integrasi Website</p></div>
+            </button>
+            <button class="certificate-card reveal" type="button" data-certificate="backend" data-cert-img="assets/images/certificate.svg" data-cert-title="Backend Development &amp; REST API" data-cert-desc="Kompetensi arsitektur backend, validasi data, dan integrasi database Laravel." data-delay="90">
+              <div class="certificate-image certificate-placeholder"><span>BACKEND<br />DEV</span></div>
+              <div class="certificate-info"><span>IN PROGRESS</span><h3>Backend &amp; REST API</h3><p>Laravel, MySQL &amp; RESTful API</p></div>
+            </button>
+            <button class="certificate-card reveal" type="button" data-certificate="school" data-cert-img="assets/images/certificate.svg" data-cert-title="Sertifikat Magang / PKL" data-cert-desc="Sertifikat Praktik Kerja Lapangan (PKL) Backend Developer di Humma Teknologi Indonesia." data-delay="180">
+              <div class="certificate-image certificate-placeholder"><span>INTERNSHIP<br />PKL</span></div>
+              <div class="certificate-info"><span>UPCOMING</span><h3>Sertifikat PKL</h3><p>Aziel Software House</p></div>
+            </button>
+          </div>
+        </div>
+
+        <div class="showcase-panel" id="stackPanel" data-panel="stack" role="tabpanel" hidden>
+          <div class="tech-grid">
+            <article class="tech-card reveal"><span class="tech-icon tech-laravel">L</span><strong>Laravel</strong><small>MAIN FRAMEWORK</small></article>
+            <article class="tech-card reveal" data-delay="40"><span class="tech-icon tech-php">PHP</span><strong>PHP</strong><small>BACKEND LANGUAGE</small></article>
+            <article class="tech-card reveal" data-delay="80"><span class="tech-icon tech-mysql">DB</span><strong>MySQL</strong><small>DATABASE</small></article>
+            <article class="tech-card reveal" data-delay="120"><span class="tech-icon tech-postman">API</span><strong>Postman</strong><small>API TESTING</small></article>
+            <article class="tech-card reveal" data-delay="160"><span class="tech-icon tech-git">GIT</span><strong>Git</strong><small>VERSION CONTROL</small></article>
+            <article class="tech-card reveal" data-delay="200"><span class="tech-icon tech-html">&lt;/&gt;</span><strong>Web Basics</strong><small>HTML · CSS · JS</small></article>
+            <article class="tech-card reveal" data-delay="240"><span class="tech-icon tech-auth">AUTH</span><strong>Sanctum</strong><small>AUTHENTICATION</small></article>
+            <article class="tech-card reveal" data-delay="280"><span class="tech-icon tech-next">→</span><strong>Clean Architecture</strong><small>NEXT TARGET</small></article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact section" id="contact" data-section="contact">
+      <div class="grid-bg grid-soft" aria-hidden="true"></div>
+
+      <div class="contact-heading">
+        <p class="section-kicker reveal">GET IN TOUCH</p>
+        <h2 data-split="lines"><span>Contact Me</span></h2>
+        <p class="reveal" data-delay="120">Punya masukan, ide project, atau ingin berdiskusi tentang backend? Kirim pesan melalui form di bawah.</p>
+      </div>
+
+      <div class="contact-layout">
+        <div class="contact-card reveal-left">
+          <div class="contact-card-title">
+            <div><span>01</span><h3>Hubungi Saya</h3></div>
+            <i class="status-dot"></i>
+          </div>
+          <p>Kirim pesan langsung ke email saya melalui form ini. Pesan akan diproses secara aman.</p>
+
+          <form id="contactForm" class="contact-form" action="https://formspree.io/f/xljroywk" method="POST">
+            <label><span>Your Name</span><input type="text" name="name" placeholder="Nama lengkap" autocomplete="name" required /></label>
+            <label><span>Your Email</span><input type="email" name="email" placeholder="nama@email.com" autocomplete="email" required /></label>
+            <label><span>Your Message</span><textarea name="message" rows="5" placeholder="Tulis pesan..." required></textarea></label>
+            <button class="button button-primary magnetic" type="submit" id="contactSubmitBtn"><span>Send Message</span><i>↗</i></button>
+            <p class="form-status" id="formStatus" aria-live="polite"></p>
+          </form>
+
+          <div class="contact-socials">
+            <span>CONNECT WITH ME</span>
+            <div>
+              <a href="https://github.com/azielganteng" target="_blank" rel="noopener noreferrer" aria-label="GitHub">GitHub ↗</a>
+              <a href="https://www.tiktok.com/@ellzznotgutt" target="_blank" rel="noopener noreferrer" aria-label="TikTok">TikTok ↗</a>
+              <a href="https://www.instagram.com/ieelmorant_?igsh=MXU4amg3eWxwcXZycQ==" target="_blank" rel="noopener noreferrer" aria-label="Instagram">Instagram ↗</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="comments-card reveal-right">
+          <div class="contact-card-title">
+            <div><span>02</span><h3>Comments</h3></div>
+            <small>LOCAL DEMO</small>
+          </div>
+          <p>Tinggalkan komentar singkat. Data disimpan di browser perangkat ini.</p>
+
+          <form id="commentForm" class="comment-form">
+            <input type="text" name="commentName" placeholder="Your name" maxlength="24" required />
+            <textarea name="commentText" rows="3" placeholder="Your comment" maxlength="140" required></textarea>
+            <button type="submit">Post Comment <span>↗</span></button>
+          </form>
+
+          <div class="comment-list" id="commentList" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>© 2026 Muhammad Aziel Akbar Santoso</span>
+    <span>Rekayasa Perangkat Lunak · SMKN 1 Sukorejo</span>
+    <a href="#home">Back to top ↑</a>
+  </footer>
+
+  <div class="project-modal" id="projectModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button class="project-modal-backdrop" type="button" data-close-modal aria-label="Tutup detail project"></button>
+    <div class="project-modal-dialog">
+      <div class="modal-topbar">
+        <button type="button" data-close-modal>← Back</button>
+        <span>PROJECT DETAILS</span>
+        <button type="button" data-close-modal aria-label="Tutup">×</button>
+      </div>
+      <div class="modal-content" id="modalContent">
+        <div class="modal-copy">
+          <span class="modal-kicker" id="modalKicker">BACKEND PROJECT</span>
+          <h2 id="modalTitle">Project title</h2>
+          <p id="modalDescription">Project description.</p>
+          <div class="modal-stats" id="modalStats"></div>
+          <div class="modal-section"><span>KEY FEATURES</span><ul id="modalFeatures"></ul></div>
+          <div class="modal-section"><span>TECHNOLOGIES USED</span><div class="modal-tags" id="modalTags"></div></div>
+        </div>
+        <div class="modal-visual" id="modalVisual"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="certificate-modal" id="certificateModal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Pratinjau sertifikat">
+    <button class="project-modal-backdrop" type="button" data-close-certificate aria-label="Tutup sertifikat"></button>
+    <div class="certificate-modal-dialog">
+      <button class="certificate-modal-close" type="button" data-close-certificate aria-label="Tutup">×</button>
+      <img id="certModalImage" src="assets/images/sertifikat.jpg" alt="Pratinjau sertifikat" />
+      <p id="certModalCaption">Pratinjau sertifikat pencapaian dan pembelajaran.</p>
+    </div>
+  </div>
+</body>
+</html>

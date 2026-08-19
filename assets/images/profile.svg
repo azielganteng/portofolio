@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Ilustrasi avatar Muhammad Aziel</title>
+  <desc id="desc">Ilustrasi monokrom seorang backend developer muda.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2b2b2b"/>
+      <stop offset="0.55" stop-color="#111"/>
+      <stop offset="1" stop-color="#030303"/>
+    </linearGradient>
+    <linearGradient id="skin" x1="0.1" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#ededed"/>
+      <stop offset="0.5" stop-color="#aaa"/>
+      <stop offset="1" stop-color="#555"/>
+    </linearGradient>
+    <linearGradient id="cloth" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4a4a4a"/>
+      <stop offset="0.5" stop-color="#181818"/>
+      <stop offset="1" stop-color="#050505"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <circle cx="615" cy="175" r="180" fill="#fff" opacity=".08" filter="url(#shadow)"/>
+  <path d="M120 1000C145 756 272 675 395 675s254 79 285 325z" fill="url(#cloth)"/>
+  <path d="M302 646c25 44 61 68 96 68 40 0 75-25 101-70l-22-116H324z" fill="#777"/>
+  <ellipse cx="403" cy="392" rx="169" ry="211" fill="url(#skin)"/>
+  <path d="M238 374c6-149 60-232 164-242 121-12 192 73 183 242-31-93-86-136-164-131-74 4-130 48-183 131z" fill="#080808"/>
+  <path d="M262 278c44-89 114-130 207-116 75 11 117 59 130 133-57-40-105-55-164-48-70 8-118 31-173 31z" fill="#111"/>
+  <ellipse cx="333" cy="403" rx="26" ry="12" fill="#161616"/>
+  <ellipse cx="475" cy="403" rx="26" ry="12" fill="#161616"/>
+  <path d="M382 460c15 12 34 12 49 0" fill="none" stroke="#4d4d4d" stroke-width="10" stroke-linecap="round"/>
+  <path d="M330 527c43 39 105 39 148 0" fill="none" stroke="#303030" stroke-width="12" stroke-linecap="round"/>
+  <path d="M234 374c-37 8-46 59-20 104 14 24 31 31 48 26zM572 374c38 8 47 59 21 104-14 24-31 31-48 26z" fill="#777"/>
+  <path d="M274 721l128 147 132-147 34 279H235z" fill="#111"/>
+  <path d="M343 708l59 160 62-160-62 36z" fill="#d7d7d7"/>
+  <g opacity=".24" fill="none" stroke="#fff">
+    <circle cx="400" cy="410" r="290"/>
+    <circle cx="400" cy="410" r="330" stroke-dasharray="8 16"/>
+  </g>
+  <g fill="#fff" opacity=".45" font-family="monospace" font-size="17">
+    <text x="35" y="60">AZIEL / PORTRAIT / 2026</text>
+    <text x="35" y="92">BACKEND STUDENT PROFILE</text>
+  </g>
+</svg>

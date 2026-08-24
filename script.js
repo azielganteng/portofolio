@@ -1495,6 +1495,100 @@ document.addEventListener("DOMContentLoaded", () => {
     return { blocked: false };
   }
 
+  /* =====================================================
+     OWNER ADMIN COMMENT MODERATION
+  ====================================================== */
+  const ADMIN_MASTER_PIN = "aziel2026";
+  const commentAdminToggle = $("#commentAdminToggle");
+  const commentAdminBar = $("#commentAdminBar");
+  const adminToggleIcon = $("#adminToggleIcon");
+  const adminClearAllBtn = $("#adminClearAllBtn");
+  const adminLogoutBtn = $("#adminLogoutBtn");
+  const adminAuthModal = $("#adminAuthModal");
+  const adminAuthBackdrop = $("#adminAuthBackdrop");
+  const adminAuthCancelBtn = $("#adminAuthCancelBtn");
+  const adminAuthForm = $("#adminAuthForm");
+  const adminPinInput = $("#adminPinInput");
+  const adminAuthError = $("#adminAuthError");
+
+  const isAdminLoggedIn = () => sessionStorage.getItem("aziel_admin_auth") === "true";
+
+  function updateAdminUI() {
+    const isAuth = isAdminLoggedIn();
+    if (commentAdminBar) commentAdminBar.style.display = isAuth ? "flex" : "none";
+    if (adminToggleIcon) adminToggleIcon.textContent = isAuth ? "👑" : "🔒";
+    renderComments();
+  }
+
+  function openAdminAuthModal() {
+    if (!adminAuthModal) return;
+    if (isAdminLoggedIn()) {
+      createToast("Mode Admin sudah aktif!");
+      return;
+    }
+    if (adminPinInput) adminPinInput.value = "";
+    if (adminAuthError) adminAuthError.style.display = "none";
+    adminAuthModal.classList.add("is-open");
+    adminAuthModal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+    window.setTimeout(() => adminPinInput?.focus(), 100);
+  }
+
+  function closeAdminAuthModal() {
+    if (!adminAuthModal?.classList.contains("is-open")) return;
+    adminAuthModal.classList.remove("is-open");
+    adminAuthModal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+  }
+
+  commentAdminToggle?.addEventListener("click", () => {
+    if (isAdminLoggedIn()) {
+      if (confirm("Logout dari Mode Admin?")) {
+        sessionStorage.removeItem("aziel_admin_auth");
+        updateAdminUI();
+        createToast("Mode Admin dinonaktifkan.");
+      }
+    } else {
+      openAdminAuthModal();
+    }
+  });
+
+  adminAuthBackdrop?.addEventListener("click", closeAdminAuthModal);
+  adminAuthCancelBtn?.addEventListener("click", closeAdminAuthModal);
+
+  adminAuthForm?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const pin = String(adminPinInput?.value || "").trim();
+    if (pin === ADMIN_MASTER_PIN) {
+      sessionStorage.setItem("aziel_admin_auth", "true");
+      closeAdminAuthModal();
+      updateAdminUI();
+      createToast("👑 Akses Owner Berhasil! Mode Hapus Komentar Aktif.");
+    } else {
+      if (adminAuthError) {
+        adminAuthError.textContent = "PIN Master salah! Akses ditolak.";
+        adminAuthError.style.display = "block";
+      }
+      adminPinInput?.classList.add("comment-shake");
+      window.setTimeout(() => adminPinInput?.classList.remove("comment-shake"), 400);
+    }
+  });
+
+  adminLogoutBtn?.addEventListener("click", () => {
+    sessionStorage.removeItem("aziel_admin_auth");
+    updateAdminUI();
+    createToast("Mode Admin dinonaktifkan.");
+  });
+
+  adminClearAllBtn?.addEventListener("click", () => {
+    if (!isAdminLoggedIn()) return;
+    if (confirm("⚠️ Yakin ingin menghapus SEMUA komentar publik? Tindakan ini tidak dapat dibatalkan.")) {
+      saveComments(defaultComments);
+      renderComments();
+      createToast("✓ Semua komentar berhasil di-reset oleh Admin.");
+    }
+  });
+
   const getComments = () => {
     try {
       const stored = JSON.parse(localStorage.getItem(storageKey) || "null");
@@ -1515,7 +1609,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const renderComments = () => {
     if (!commentList) return;
     const comments = getComments();
-    commentList.innerHTML = comments.map((comment) => {
+    const isAuth = isAdminLoggedIn();
+
+    commentList.innerHTML = comments.map((comment, idx) => {
       const safeName = String(comment.name).replace(/[<>&"']/g, "");
       const safeText = String(comment.text).replace(/[<>&"']/g, "");
       const initials = safeName.slice(0, 2).toUpperCase();
@@ -1527,6 +1623,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <div style="display:flex; align-items:center; gap:8px;">
               <strong>${safeName}</strong>
               ${isAdmin ? '<span style="font-size:0.55rem; background:rgba(184,255,107,0.15); color:var(--lime); padding:1px 6px; border-radius:4px; border:1px solid rgba(184,255,107,0.3); font-family:var(--font-mono);">OWNER</span>' : ''}
+              ${isAuth ? `<button type="button" class="comment-delete-btn" data-delete-comment="${idx}" title="Hapus komentar ini">🗑️ Hapus</button>` : ''}
             </div>
             <p>${safeText}</p>
           </div>
@@ -1534,7 +1631,23 @@ document.addEventListener("DOMContentLoaded", () => {
         </article>`;
     }).join("");
   };
-  renderComments();
+  updateAdminUI();
+
+  // Handle single comment delete click
+  commentList?.addEventListener("click", (e) => {
+    const deleteBtn = e.target.closest("[data-delete-comment]");
+    if (deleteBtn && isAdminLoggedIn()) {
+      const idx = Number(deleteBtn.dataset.deleteComment);
+      const comments = getComments();
+      const targetComment = comments[idx];
+      if (confirm(`Hapus komentar dari "${targetComment?.name}"?`)) {
+        comments.splice(idx, 1);
+        saveComments(comments.length > 0 ? comments : defaultComments);
+        renderComments();
+        createToast("✓ Komentar berhasil dihapus!");
+      }
+    }
+  });
 
   commentForm?.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -1686,10 +1799,24 @@ document.addEventListener("DOMContentLoaded", () => {
       return `<p class="term-line" style="color:var(--lime);">✓ Membuka modal Curriculum Vitae...</p>`;
     },
 
+    admin: (args) => {
+      const pin = args?.[0];
+      if (!pin) {
+        return `<p class="term-line" style="color:#f59e0b;">Penggunaan: <code>admin &lt;PIN_MASTER&gt;</code> (Contoh: <code>admin aziel2026</code>)</p>`;
+      }
+      if (pin === ADMIN_MASTER_PIN) {
+        sessionStorage.setItem("aziel_admin_auth", "true");
+        updateAdminUI();
+        return `<p class="term-line" style="color:var(--lime);">👑 Akses Owner Diterima! Mode Hapus Komentar Aktif di halaman.</p>`;
+      } else {
+        return `<p class="term-line" style="color:#ef4444;">❌ PIN Salah! Akses ditolak.</p>`;
+      }
+    },
+
     whoami: () => `
-      <p class="term-line">User: <strong class="term-hl">guest@aziel.dev</strong></p>
-      <p class="term-line term-dim">Role: Authorized Visitor / Recruiter</p>
-      <p class="term-line term-dim">Access: Read-Only Portfolio Explorer</p>`,
+      <p class="term-line">User: <strong class="term-hl">${isAdminLoggedIn() ? "aziel@owner.root" : "guest@aziel.dev"}</strong></p>
+      <p class="term-line term-dim">Role: ${isAdminLoggedIn() ? "Owner / System Administrator" : "Authorized Visitor / Recruiter"}</p>
+      <p class="term-line term-dim">Access: ${isAdminLoggedIn() ? "Full Administrative Control" : "Read-Only Portfolio Explorer"}</p>`,
 
     date: () => `<p class="term-line">${new Date().toLocaleString("id-ID", { dateStyle: "full", timeStyle: "medium" })}</p>`,
 

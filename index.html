@@ -571,9 +571,26 @@
             <div><span>02</span>
               <h3>Public Comments</h3>
             </div>
-            <small class="comment-badge">● LIVE MODERATED</small>
+            <div class="comment-header-right">
+              <small class="comment-badge" id="commentBadge">● LIVE MODERATED</small>
+              <button type="button" class="comment-admin-toggle" id="commentAdminToggle" title="Mode Kelola / Hapus (Khusus Aziel)">
+                <span id="adminToggleIcon">🔒</span>
+              </button>
+            </div>
           </div>
           <p>Tinggalkan pesan atau feedback publik. Komentar dimoderasi otomatis dengan filter sensor kata.</p>
+
+          <!-- Admin Toolbar (Muncul jika Aziel login sebagai Admin) -->
+          <div class="comment-admin-bar" id="commentAdminBar" style="display:none;">
+            <div class="admin-bar-info">
+              <span class="admin-badge">👑 OWNER ADMIN ACTIVE</span>
+              <small>Tombol Hapus Aktif di Setiap Komentar</small>
+            </div>
+            <div class="admin-bar-actions">
+              <button type="button" class="admin-btn-clear" id="adminClearAllBtn">🧹 Hapus Semua</button>
+              <button type="button" class="admin-btn-logout" id="adminLogoutBtn">Logout</button>
+            </div>
+          </div>
 
           <form id="commentForm" class="comment-form">
             <input type="text" name="commentName" id="commentNameInput" placeholder="Nama Anda (cth. Reihan / Recruiter)" maxlength="24" required />
@@ -846,6 +863,25 @@
           <input type="text" id="terminalInput" class="terminal-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Ketik perintah di sini..." />
         </form>
       </div>
+    </div>
+  </div>
+  <!-- Admin Passcode Modal -->
+  <div class="admin-auth-modal" id="adminAuthModal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Admin Authentication">
+    <button class="project-modal-backdrop" type="button" id="adminAuthBackdrop" aria-label="Tutup"></button>
+    <div class="admin-auth-dialog">
+      <div class="admin-auth-header">
+        <span class="admin-icon">👑</span>
+        <h4>Owner Access Authentication</h4>
+        <p>Masukkan Master PIN Aziel untuk mengaktifkan fitur hapus &amp; kelola komentar.</p>
+      </div>
+      <form id="adminAuthForm" class="admin-auth-form">
+        <input type="password" id="adminPinInput" placeholder="Masukkan PIN Master..." autocomplete="off" required />
+        <div class="admin-auth-btns">
+          <button type="button" id="adminAuthCancelBtn" class="button button-secondary">Batal</button>
+          <button type="submit" class="button button-primary"><span>Unlock Admin</span><i>→</i></button>
+        </div>
+        <p class="admin-auth-error" id="adminAuthError"></p>
+      </form>
     </div>
   </div>
 </body>

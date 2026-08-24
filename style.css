@@ -1514,3 +1514,183 @@ main { position: relative; z-index: 1; }
   30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
   40%, 60% { transform: translate3d(3px, 0, 0); }
 }
+
+/* =====================================================
+   ADMIN COMMENT MODERATION
+====================================================== */
+.comment-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.comment-admin-toggle {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--muted);
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-size: 0.72rem;
+  transition: all 0.2s ease;
+}
+.comment-admin-toggle:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--fg);
+  border-color: var(--lime);
+}
+.comment-admin-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(184, 255, 107, 0.08);
+  border: 1px solid rgba(184, 255, 107, 0.25);
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 14px;
+}
+.admin-bar-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.admin-badge {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--lime);
+}
+.admin-bar-info small {
+  font-size: 0.65rem;
+  color: var(--muted);
+}
+.admin-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.admin-btn-clear,
+.admin-btn-logout {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.admin-btn-clear:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  color: #fca5a5;
+}
+.admin-btn-logout:hover {
+  background: var(--fg);
+  color: var(--bg);
+}
+.comment-delete-btn {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  padding: 3px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: auto;
+  transition: all 0.15s ease;
+}
+.comment-delete-btn:hover {
+  background: #ef4444;
+  color: #fff;
+}
+
+/* Admin Auth Modal */
+.admin-auth-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.25s ease;
+}
+.admin-auth-modal.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+.admin-auth-dialog {
+  position: relative;
+  width: min(380px, 92vw);
+  background: #101014;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+  z-index: 10;
+}
+.admin-auth-header {
+  text-align: center;
+}
+.admin-icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 6px;
+}
+.admin-auth-header h4 {
+  font-size: 1.05rem;
+  color: var(--fg);
+  margin-bottom: 4px;
+}
+.admin-auth-header p {
+  font-size: 0.75rem;
+  color: var(--muted);
+  line-height: 1.4;
+  margin: 0;
+}
+.admin-auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.admin-auth-form input {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  padding: 10px 14px;
+  border-radius: 8px;
+  outline: none;
+  text-align: center;
+  letter-spacing: 0.15em;
+}
+.admin-auth-form input:focus {
+  border-color: var(--lime);
+}
+.admin-auth-btns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.admin-auth-btns button {
+  min-height: 38px;
+  font-size: 0.75rem;
+}
+.admin-auth-error {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #ef4444;
+  text-align: center;
+  margin: 0;
+  display: none;
+}

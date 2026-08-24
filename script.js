@@ -1383,46 +1383,115 @@ document.addEventListener("DOMContentLoaded", () => {
     { name: "Senior Dev", text: "Struktur REST API dan validasi anti-bentroknya rapi bro.", time: "24 Agu 2026" }
   ];
 
-  // Blacklist and Bad Words Rules
-  const blacklistRules = [
-    {
-      regex: /\bbudi\b|b[\W_]*u[\W_]*d[\W_]*i|b[u0]d[i1]/i,
-      word: "budi",
+  // Comprehensive Profanity & Blacklist List with Anti-Bypass
+  const bannedKeywords = {
+    budi: {
+      words: ["budi", "budy", "boedi"],
       reason: "Kata 'budi' masuk dalam daftar hitam (blacklist) sistem komentar ini."
     },
-    {
-      regex: /\bidub\b|i[\W_]*d[\W_]*u[\W_]*b|[i1]d[u0]b/i,
-      word: "idub",
+    idub: {
+      words: ["idub", "idup", "ydub"],
       reason: "Kata 'idub' masuk dalam daftar hitam (blacklist) sistem komentar ini."
     },
-    {
-      regex: /\b(anjing|anjir|anj|asw|asu|babi|bangsat|bajingan|kontol|kntl|memek|pantek|pepek|tolol|goblok|bego|ngentot|ngentd|jancok|jancuk|itil|perek|lonte|kampang|tai|bajigur|puki)\b/i,
-      word: "kata kasar",
+    kasar: {
+      words: [
+        "kontol", "kntl", "kntol", "memek", "mmk", "pantek", "pntk", "pepek", "ppk",
+        "anjing", "anjir", "anj", "anjg", "asw", "asu", "babi", "bb", "bangsat", "bgst",
+        "bajingan", "tolol", "tlol", "goblok", "gblk", "bego", "ngentot", "ngntt", "ngentd",
+        "jancok", "jnck", "jancuk", "itil", "perek", "lonte", "lont", "kampang", "puki", "pukimak",
+        "tai", "taek", "silit", "jembut", "titit", "tetek", "toket", "tempik", "banci", "bencong",
+        "fuck", "fck", "shit", "bitch", "btch", "asshole", "dick", "pussy", "cunt", "whore", "slut",
+        "nigger", "nigga", "bastard"
+      ],
       reason: "Mengandung kata-kata kasar / umpatan yang dilarang."
     },
-    {
-      regex: /\b(fuck|shit|bitch|asshole|dick|pussy|whore|slut|cunt|nigger|nigga)\b/i,
-      word: "profanity",
-      reason: "Mengandung kata tidak pantas (profanity) dalam bahasa Inggris."
-    },
-    {
-      regex: /\b(scam|slot|judi|gacor88|zeus|pragmatic|hack|porn|bokep|situs judol)\b/i,
-      word: "spam / judi",
+    spam: {
+      words: ["slot", "judi", "judol", "gacor88", "zeus", "pragmatic", "togel", "bokep", "porn", "xnxx", "xvideos"],
       reason: "Terdeteksi sebagai spam / promosi terlarang."
     }
-  ];
+  };
+
+  function normalizeText(input) {
+    let str = String(input || "").toLowerCase();
+
+    // 1. Leetspeak numbers & symbols decoding
+    const leetMap = {
+      '0': 'o',
+      '1': 'i',
+      '!': 'i',
+      '|': 'i',
+      '3': 'e',
+      '4': 'a',
+      '@': 'a',
+      '5': 's',
+      '$': 's',
+      '7': 't',
+      '+': 't',
+      '8': 'b',
+      '9': 'g',
+      'v': 'u',
+      '(': 'c',
+      '[': 'c'
+    };
+
+    let converted = "";
+    for (let i = 0; i < str.length; i++) {
+      const char = str[i];
+      converted += leetMap[char] || char;
+    }
+
+    // 2. String without symbols
+    const cleanedWithSpaces = converted.replace(/[^a-z\s]/g, "");
+
+    // 3. Collapsed string (no spaces, no symbols)
+    const collapsed = converted.replace(/[^a-z]/g, "");
+
+    // 4. Character De-duplication (e.g. "kontolllll" -> "kontol", "buuudiii" -> "budi")
+    const deDupedWithSpaces = cleanedWithSpaces.replace(/(.)\1+/g, "$1");
+    const collapsedDeDuped = collapsed.replace(/(.)\1+/g, "$1");
+
+    return {
+      raw: str,
+      converted,
+      cleanedWithSpaces,
+      collapsed,
+      deDupedWithSpaces,
+      collapsedDeDuped
+    };
+  }
 
   function checkBlacklist(name, text) {
-    const combined = `${name} ${text}`.toLowerCase();
-    for (const rule of blacklistRules) {
-      if (rule.regex.test(combined)) {
-        return {
-          blocked: true,
-          word: rule.word,
-          reason: rule.reason
-        };
+    const rawCombined = `${name} ${text}`;
+    const norm = normalizeText(rawCombined);
+
+    // Array of text variants to scan
+    const textVariants = [
+      norm.raw,
+      norm.converted,
+      norm.cleanedWithSpaces,
+      norm.collapsed,
+      norm.deDupedWithSpaces,
+      norm.collapsedDeDuped
+    ];
+
+    // Check each category
+    for (const [category, data] of Object.entries(bannedKeywords)) {
+      for (const word of data.words) {
+        // Flexible regex with repetition tolerance (e.g., k+o+n+t+o+l+)
+        const flexibleRegex = new RegExp(word.split("").map((c) => `${c}+[\\W_]*`).join(""), "i");
+
+        for (const variant of textVariants) {
+          if (variant.includes(word) || flexibleRegex.test(variant)) {
+            return {
+              blocked: true,
+              word: category === "budi" || category === "idub" ? word : category,
+              reason: data.reason
+            };
+          }
+        }
       }
     }
+
     return { blocked: false };
   }
 

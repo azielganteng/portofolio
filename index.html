@@ -569,16 +569,19 @@
         <div class="comments-card reveal-right">
           <div class="contact-card-title">
             <div><span>02</span>
-              <h3>Comments</h3>
+              <h3>Public Comments</h3>
             </div>
-            <small>LOCAL DEMO</small>
+            <small class="comment-badge">● LIVE MODERATED</small>
           </div>
-          <p>Tinggalkan komentar singkat. Data disimpan di browser perangkat ini.</p>
+          <p>Tinggalkan pesan atau feedback publik. Komentar dimoderasi otomatis dengan filter sensor kata.</p>
 
           <form id="commentForm" class="comment-form">
-            <input type="text" name="commentName" placeholder="Your name" maxlength="24" required />
-            <textarea name="commentText" rows="3" placeholder="Your comment" maxlength="140" required></textarea>
-            <button type="submit">Post Comment <span>↗</span></button>
+            <input type="text" name="commentName" id="commentNameInput" placeholder="Nama Anda (cth. Reihan / Recruiter)" maxlength="24" required />
+            <textarea name="commentText" id="commentTextInput" rows="3" placeholder="Tulis komentar yang sopan & profesional..." maxlength="140" required></textarea>
+            <button type="submit" id="commentSubmitBtn">
+              <span>Post Comment</span><i>↗</i>
+            </button>
+            <div class="comment-status" id="commentStatus" aria-live="polite"></div>
           </form>
 
           <div class="comment-list" id="commentList" aria-live="polite"></div>

@@ -1471,3 +1471,46 @@ main { position: relative; z-index: 1; }
   .terminal-launcher .terminal-text kbd { display: none; }
   .terminal-window { height: 90vh; }
 }
+
+/* =====================================================
+   COMMENTS & AUTO-MODERATION BADGE
+====================================================== */
+.comment-badge {
+  color: var(--lime) !important;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+.comment-status {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  margin-top: 8px;
+  border-radius: 8px;
+  display: none;
+  transition: all 0.25s ease;
+}
+.comment-status.error {
+  display: block;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+  padding: 8px 12px;
+}
+.comment-status.success {
+  display: block;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #86efac;
+  padding: 8px 12px;
+}
+.comment-shake {
+  animation: commentShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+@keyframes commentShake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+  40%, 60% { transform: translate3d(3px, 0, 0); }
+}

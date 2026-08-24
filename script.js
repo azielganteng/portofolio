@@ -1369,28 +1369,78 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* =====================================================
-     COMMENTS / LOCAL STORAGE
+     COMMENTS WITH AUTO-MODERATION & BLACKLIST ENGINE
   ====================================================== */
 
   const commentForm = $("#commentForm");
   const commentList = $("#commentList");
-  const storageKey = "azielPortfolioCommentsV1";
+  const commentStatus = $("#commentStatus");
+  const storageKey = "azielPortfolioCommentsV2";
+
   const defaultComments = [
-    { name: "Aziel", text: "Portfolio backend sedang terus dikembangkan.", time: "Now" },
-    { name: "Visitor", text: "Clean design and smooth interaction!", time: "Demo" },
+    { name: "Aziel (Admin)", text: "Selamat datang di portfolio backend saya! Silakan tinggalkan feedback di sini.", time: "24 Agu 2026" },
+    { name: "Tech Recruiter", text: "Clean portfolio and impressive API simulation! Keep it up Aziel.", time: "24 Agu 2026" },
+    { name: "Senior Dev", text: "Struktur REST API dan validasi anti-bentroknya rapi bro.", time: "24 Agu 2026" }
   ];
+
+  // Blacklist and Bad Words Rules
+  const blacklistRules = [
+    {
+      regex: /\bbudi\b|b[\W_]*u[\W_]*d[\W_]*i|b[u0]d[i1]/i,
+      word: "budi",
+      reason: "Kata 'budi' masuk dalam daftar hitam (blacklist) sistem komentar ini."
+    },
+    {
+      regex: /\bidub\b|i[\W_]*d[\W_]*u[\W_]*b|[i1]d[u0]b/i,
+      word: "idub",
+      reason: "Kata 'idub' masuk dalam daftar hitam (blacklist) sistem komentar ini."
+    },
+    {
+      regex: /\b(anjing|anjir|anj|asw|asu|babi|bangsat|bajingan|kontol|kntl|memek|pantek|pepek|tolol|goblok|bego|ngentot|ngentd|jancok|jancuk|itil|perek|lonte|kampang|tai|bajigur|puki)\b/i,
+      word: "kata kasar",
+      reason: "Mengandung kata-kata kasar / umpatan yang dilarang."
+    },
+    {
+      regex: /\b(fuck|shit|bitch|asshole|dick|pussy|whore|slut|cunt|nigger|nigga)\b/i,
+      word: "profanity",
+      reason: "Mengandung kata tidak pantas (profanity) dalam bahasa Inggris."
+    },
+    {
+      regex: /\b(scam|slot|judi|gacor88|zeus|pragmatic|hack|porn|bokep|situs judol)\b/i,
+      word: "spam / judi",
+      reason: "Terdeteksi sebagai spam / promosi terlarang."
+    }
+  ];
+
+  function checkBlacklist(name, text) {
+    const combined = `${name} ${text}`.toLowerCase();
+    for (const rule of blacklistRules) {
+      if (rule.regex.test(combined)) {
+        return {
+          blocked: true,
+          word: rule.word,
+          reason: rule.reason
+        };
+      }
+    }
+    return { blocked: false };
+  }
 
   const getComments = () => {
     try {
       const stored = JSON.parse(localStorage.getItem(storageKey) || "null");
-      return Array.isArray(stored) ? stored : defaultComments;
+      return Array.isArray(stored) && stored.length > 0 ? stored : defaultComments;
     } catch {
       return defaultComments;
     }
   };
 
   const saveComments = (comments) => {
-    try { localStorage.setItem(storageKey, JSON.stringify(comments.slice(0, 8))); } catch { /* storage may be unavailable */ }
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(comments.slice(0, 15)));
+    } catch {
+      /* storage limit safe */
+    }
   };
 
   const renderComments = () => {
@@ -1400,7 +1450,19 @@ document.addEventListener("DOMContentLoaded", () => {
       const safeName = String(comment.name).replace(/[<>&"']/g, "");
       const safeText = String(comment.text).replace(/[<>&"']/g, "");
       const initials = safeName.slice(0, 2).toUpperCase();
-      return `<article class="comment-item"><span class="comment-avatar">${initials}</span><div class="comment-copy"><strong>${safeName}</strong><p>${safeText}</p></div><span class="comment-time">${comment.time || "Now"}</span></article>`;
+      const isAdmin = safeName.toLowerCase().includes("aziel");
+      return `
+        <article class="comment-item">
+          <span class="comment-avatar ${isAdmin ? 'admin-avatar' : ''}">${initials}</span>
+          <div class="comment-copy">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <strong>${safeName}</strong>
+              ${isAdmin ? '<span style="font-size:0.55rem; background:rgba(184,255,107,0.15); color:var(--lime); padding:1px 6px; border-radius:4px; border:1px solid rgba(184,255,107,0.3); font-family:var(--font-mono);">OWNER</span>' : ''}
+            </div>
+            <p>${safeText}</p>
+          </div>
+          <span class="comment-time">${comment.time || "Now"}</span>
+        </article>`;
     }).join("");
   };
   renderComments();
@@ -1410,13 +1472,45 @@ document.addEventListener("DOMContentLoaded", () => {
     const data = new FormData(commentForm);
     const name = String(data.get("commentName") || "").trim();
     const text = String(data.get("commentText") || "").trim();
+
     if (!name || !text) return;
+
+    // Run Auto-Moderation & Blacklist Check
+    const checkResult = checkBlacklist(name, text);
+
+    if (checkResult.blocked) {
+      if (commentStatus) {
+        commentStatus.className = "comment-status error";
+        commentStatus.style.display = "block";
+        commentStatus.innerHTML = `<strong>❌ Komentar Ditolak!</strong><br />${checkResult.reason} Harap gunakan bahasa yang santun dan profesional.`;
+      }
+      commentForm.classList.remove("comment-shake");
+      void commentForm.offsetWidth; // Trigger reflow for animation
+      commentForm.classList.add("comment-shake");
+      createToast(`Ditolak: Mengandung kata dilarang (${checkResult.word})`);
+      return;
+    }
+
+    // Format current date in Indonesian
+    const now = new Date();
+    const dateStr = `${now.toLocaleDateString("id-ID", { day: "numeric", month: "short" })}, ${now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}`;
+
     const comments = getComments();
-    comments.unshift({ name, text, time: "Now" });
+    comments.unshift({ name, text, time: dateStr });
     saveComments(comments);
     renderComments();
+
+    if (commentStatus) {
+      commentStatus.className = "comment-status success";
+      commentStatus.style.display = "block";
+      commentStatus.innerHTML = `✓ <strong>Komentar Berhasil Terbit!</strong> Terima kasih atas feedback Anda.`;
+      window.setTimeout(() => {
+        if (commentStatus) commentStatus.style.display = "none";
+      }, 4000);
+    }
+
     commentForm.reset();
-    createToast("Komentar tersimpan di browser ini.");
+    createToast("✓ Komentar berhasil diposting!");
   });
 
   /* =====================================================

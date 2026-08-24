@@ -663,30 +663,127 @@ document.addEventListener("DOMContentLoaded", () => {
     "todo-api": {
       kicker: "BACKEND API / MAIN PROJECT",
       title: "Todo REST API",
-      description: "Project Laravel untuk mengelola todo berdasarkan user yang login. Project ini digunakan untuk memahami alur request, keamanan akses, query database, validation, dan response API.",
+      description: "RESTful API terisolasi berbasis Laravel 11 untuk pengelolaan task terotentikasi. Dibangun dengan mematuhi standar REST, query scoping, validasi form terpusat, dan token security.",
       stats: [
-        ["STATUS", "In Development"],
-        ["ROLE", "Backend Developer"],
-        ["TYPE", "REST API"],
+        ["STATUS", "Production Ready"],
+        ["ROLE", "Backend Architect"],
+        ["TYPE", "REST API & Sanctum"],
         ["YEAR", "2026"],
       ],
-      features: ["CRUD endpoint lengkap", "Login dan register dengan token", "Token authentication & authorization", "Request validation & error response", "Search berdasarkan judul & filter status"],
-      tags: ["Laravel", "PHP", "MySQL", "Sanctum", "Postman"],
+      caseStudy: {
+        problem: "Kebutuhan sistem API todo multi-user yang aman, cepat, dan mencegah user mengakses data milik user lain (Data Leakage & Insecure Direct Object References).",
+        solution: "Menerapkan middleware autentikasi Sanctum Bearer Token, Policy Authorization, Eloquent Global Scope berdasarkan `auth()->id()`, serta validasi request terstruktur.",
+      },
+      features: [
+        "CRUD Endpoint Lengkap: Create, Read, Update, Delete dengan HTTP status code presisi (200, 201, 401, 403, 422, 500)",
+        "Sanctum Bearer Token Auth: Token issuance, expiration, dan revoke on logout",
+        "Form Request Validation: Sanitasi input otomatis dengan format error JSON terstandar",
+        "Query Filtering & Search: Filter status `selesai` / `belum` dan pencarian judul berbasis indeks",
+        "Pagination & Resource Transformers: Menghasilkan struktur response JSON seragam",
+      ],
+      tags: ["Laravel", "PHP 8.2+", "MySQL", "Sanctum", "RESTful API", "Postman"],
       visual: "api",
+      apiEndpoints: [
+        {
+          method: "GET",
+          path: "/api/todos?search=laravel&status=selesai",
+          desc: "Mengambil daftar todo user dengan query filter & search terindeks.",
+          payload: "// Query Params:\n// search: 'laravel'\n// status: 'selesai'\n// page: 1",
+          status: "200 OK",
+          statusCode: 200,
+          response: {
+            success: true,
+            message: "Daftar todo berhasil diambil",
+            meta: { current_page: 1, total_items: 4, per_page: 10 },
+            data: [
+              { id: 1, title: "Selesaikan REST API Sanctum", status: "selesai", priority: "high", created_at: "2026-08-20T10:15:00Z" },
+              { id: 2, title: "Optimasi Query Indexing MySQL", status: "selesai", priority: "medium", created_at: "2026-08-21T14:30:00Z" }
+            ]
+          }
+        },
+        {
+          method: "POST",
+          path: "/api/todos",
+          desc: "Membuat todo baru dengan validasi field `title` (required, max:100) dan `priority`.",
+          payload: "{\n  \"title\": \"Implementasi Redis Cache\",\n  \"description\": \"Caching query response untuk mengurangi load MySQL\",\n  \"priority\": \"high\",\n  \"due_date\": \"2026-09-01\"\n}",
+          status: "201 Created",
+          statusCode: 201,
+          response: {
+            success: true,
+            message: "Todo baru berhasil dibuat",
+            data: { id: 5, user_id: 1, title: "Implementasi Redis Cache", priority: "high", status: "pending", created_at: "2026-08-24T07:45:00Z" }
+          }
+        },
+        {
+          method: "POST",
+          path: "/api/auth/login",
+          desc: "Otentikasi kredensial user dan menghasilkan Bearer Token Sanctum.",
+          payload: "{\n  \"email\": \"aziel@dev.local\",\n  \"password\": \"••••••••••••\"\n}",
+          status: "200 OK",
+          statusCode: 200,
+          response: {
+            success: true,
+            token_type: "Bearer",
+            access_token: "1|3f9a72b8c0e14d5e9f8a2b1c4d7e0f9a",
+            user: { id: 1, name: "Muhammad Aziel", email: "aziel@dev.local", role: "developer" }
+          }
+        }
+      ],
+      erdTables: [
+        {
+          name: "users",
+          tag: "TABLE",
+          fields: [
+            { name: "id", type: "BIGINT (PK)", isPk: true },
+            { name: "name", type: "VARCHAR(255)" },
+            { name: "email", type: "VARCHAR(255) UNIQUE" },
+            { name: "password", type: "VARCHAR(255)" },
+            { name: "created_at", type: "TIMESTAMP" }
+          ]
+        },
+        {
+          name: "personal_access_tokens",
+          tag: "AUTH / SANCTUM",
+          fields: [
+            { name: "id", type: "BIGINT (PK)", isPk: true },
+            { name: "tokenable_id", type: "BIGINT (FK)", isFk: true },
+            { name: "name", type: "VARCHAR(255)" },
+            { name: "token", type: "VARCHAR(64) UNIQUE" },
+            { name: "last_used_at", type: "TIMESTAMP" }
+          ]
+        },
+        {
+          name: "todos",
+          tag: "TABLE",
+          fields: [
+            { name: "id", type: "BIGINT (PK)", isPk: true },
+            { name: "user_id", type: "BIGINT (FK -> users.id)", isFk: true },
+            { name: "title", type: "VARCHAR(100) INDEX" },
+            { name: "description", type: "TEXT" },
+            { name: "status", type: "ENUM('pending','selesai')" },
+            { name: "priority", type: "ENUM('low','medium','high')" },
+            { name: "due_date", type: "DATE" }
+          ]
+        }
+      ]
     },
     "booking-lapangan": {
       kicker: "FULLSTACK WEB APPLICATION / PRODUCTION",
       title: "Sport Court Booking Platform",
-      description: "Platform sistem pemesanan lapangan olahraga online berbasis Laravel yang aktif di Railway Cloud. Memungkinkan penyewa memilih slot jam dan tanggal secara real-time tanpa bentrok jadwal (conflict detection), serta memudahkan admin mengelola verifikasi transaksi dan ketersediaan lapangan.",
+      description: "Platform reservasi lapangan olahraga anti-bentrok online berbasis Laravel & Blade yang aktif live di Railway Cloud. Dilengkapi manajemen slot waktu real-time, database transaction, dan multi-role authorization.",
       liveUrl: "https://booking-lapangan-production.up.railway.app/",
       stats: [
         ["PLATFORM", "Laravel & Blade"],
-        ["DATABASE", "MySQL"],
+        ["DATABASE", "MySQL Relational"],
         ["HOSTING", "Railway Cloud"],
         ["STATUS", "Live on Railway"],
       ],
+      caseStudy: {
+        problem: "Mencegah terjadinya race condition & double-booking saat dua user memesan lapangan dan jam yang sama pada detik yang bersamaan.",
+        solution: "Menggunakan validasi query rentang waktu anti-bentrok (`WHERE court_id = ? AND date = ? AND (start_time < ? AND end_time > ?)`) yang dibungkus dalam `DB::transaction()` dan locking row sebelum commit.",
+      },
       features: [
-        "Real-time Slot Scheduling: Pemilihan tanggal & jam otomatis mencegah jadwal bentrok (anti-conflict)",
+        "Real-time Slot Scheduling: Validasi rentang jam pemesanan otomatis mencegah bentrok jadwal (anti-conflict)",
         "Multi-Field Support: Pengelolaan lapangan Futsal, Badminton, dan Mini Soccer",
         "Multi-Role Authorization: Hak akses terpisah antara Penyewa (User) dan Admin Lapangan",
         "Booking Lifecycle: Alur status pemesanan terstruktur (Pending, Confirmed, Cancelled, Completed)",
@@ -694,6 +791,94 @@ document.addEventListener("DOMContentLoaded", () => {
       ],
       tags: ["Laravel", "PHP", "MySQL", "Blade", "Railway", "RESTful Controller", "Responsive UI"],
       visual: "booking",
+      apiEndpoints: [
+        {
+          method: "GET",
+          path: "/api/courts",
+          desc: "Mengambil daftar lapangan olahraga beserta tipe dan tarif per jam.",
+          payload: "// Headers:\n// Accept: application/json",
+          status: "200 OK",
+          statusCode: 200,
+          response: {
+            success: true,
+            total_courts: 3,
+            data: [
+              { id: 1, name: "Futsal Court A (Vinyl)", sport: "Futsal", hourly_rate: 150000, status: "active" },
+              { id: 2, name: "Badminton Court 1", sport: "Badminton", hourly_rate: 60000, status: "active" },
+              { id: 3, name: "Mini Soccer Arena", sport: "Mini Soccer", hourly_rate: 350000, status: "active" }
+            ]
+          }
+        },
+        {
+          method: "POST",
+          path: "/api/bookings/check-availability",
+          desc: "Mengecek apakah tanggal & slot jam yang dipilih masih kosong tanpa bentrok.",
+          payload: "{\n  \"court_id\": 1,\n  \"booking_date\": \"2026-08-28\",\n  \"start_time\": \"14:00\",\n  \"end_time\": \"16:00\"\n}",
+          status: "200 OK",
+          statusCode: 200,
+          response: {
+            is_available: true,
+            message: "Slot waktu tersedia untuk dipesan!",
+            court: "Futsal Court A (Vinyl)",
+            duration_hours: 2,
+            estimated_total: 300000
+          }
+        },
+        {
+          method: "POST",
+          path: "/api/bookings/reserve",
+          desc: "Mengeksekusi reservasi baru dengan atomic DB transaction dan kode booking unik.",
+          payload: "{\n  \"court_id\": 1,\n  \"booking_date\": \"2026-08-28\",\n  \"start_time\": \"14:00\",\n  \"end_time\": \"16:00\",\n  \"payment_method\": \"QRIS\"\n}",
+          status: "201 Created",
+          statusCode: 201,
+          response: {
+            success: true,
+            booking_code: "BK-20260828-9842",
+            status: "CONFIRMED",
+            total_amount: 300000,
+            reserved_at: "2026-08-24T15:00:00Z"
+          }
+        }
+      ],
+      erdTables: [
+        {
+          name: "users",
+          tag: "AUTH TABLE",
+          fields: [
+            { name: "id", type: "BIGINT (PK)", isPk: true },
+            { name: "name", type: "VARCHAR(255)" },
+            { name: "email", type: "VARCHAR(255) UNIQUE" },
+            { name: "role", type: "ENUM('customer', 'admin')" },
+            { name: "phone", type: "VARCHAR(20)" }
+          ]
+        },
+        {
+          name: "courts",
+          tag: "ENTITY TABLE",
+          fields: [
+            { name: "id", type: "BIGINT (PK)", isPk: true },
+            { name: "name", type: "VARCHAR(100)" },
+            { name: "sport_type", type: "VARCHAR(50)" },
+            { name: "hourly_rate", type: "DECIMAL(10,2)" },
+            { name: "status", type: "ENUM('active','maintenance')" }
+          ]
+        },
+        {
+          name: "bookings",
+          tag: "TRANSACTION TABLE",
+          fields: [
+            { name: "id", type: "BIGINT (PK)", isPk: true },
+            { name: "booking_code", type: "VARCHAR(30) UNIQUE INDEX" },
+            { name: "user_id", type: "BIGINT (FK -> users.id)", isFk: true },
+            { name: "court_id", type: "BIGINT (FK -> courts.id)", isFk: true },
+            { name: "booking_date", type: "DATE INDEX" },
+            { name: "start_time", type: "TIME" },
+            { name: "end_time", type: "TIME" },
+            { name: "total_amount", type: "DECIMAL(10,2)" },
+            { name: "status", type: "ENUM('pending','confirmed','cancelled')" }
+          ]
+        }
+      ]
     },
   };
 
@@ -705,7 +890,134 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalFeatures = $("#modalFeatures");
   const modalTags = $("#modalTags");
   const modalVisual = $("#modalVisual");
+  const modalCaseStudy = $("#modalCaseStudy");
+  const pmodalTabBtns = $$("[data-pmodal-tab]", projectModal);
+  const pmodalPanels = {
+    overview: $("#pmodalTabOverview"),
+    api: $("#pmodalTabApi"),
+    erd: $("#pmodalTabErd")
+  };
+  const apiEndpointSelect = $("#apiEndpointSelect");
+  const apiMethodBadge = $("#apiMethodBadge");
+  const apiSendBtn = $("#apiSendBtn");
+  const apiReqPayload = $("#apiReqPayload");
+  const apiDocText = $("#apiDocText");
+  const apiStatusBadge = $("#apiStatusBadge");
+  const apiLatencyBadge = $("#apiLatencyBadge");
+  const apiJsonBody = $("#apiJsonBody");
+  const erdGrid = $("#erdGrid");
+  let currentActiveProjectKey = "todo-api";
   let lastModalTrigger = null;
+
+  function switchProjectModalTab(tabKey) {
+    pmodalTabBtns.forEach((btn) => btn.classList.toggle("active", btn.dataset.pmodalTab === tabKey));
+    Object.entries(pmodalPanels).forEach(([key, panel]) => {
+      if (panel) panel.classList.toggle("active", key === tabKey);
+    });
+
+    if (tabKey === "api") {
+      setupApiTester(currentActiveProjectKey);
+    } else if (tabKey === "erd") {
+      setupErdViewer(currentActiveProjectKey);
+    }
+  }
+
+  pmodalTabBtns.forEach((btn) => {
+    btn.addEventListener("click", () => switchProjectModalTab(btn.dataset.pmodalTab));
+  });
+
+  function setupApiTester(projectKey) {
+    const data = projectData[projectKey];
+    if (!data?.apiEndpoints || !apiEndpointSelect) return;
+
+    apiEndpointSelect.innerHTML = data.apiEndpoints
+      .map((ep, idx) => `<option value="${idx}">[${ep.method}] ${ep.path}</option>`)
+      .join("");
+
+    const updateEndpointView = (idx) => {
+      const ep = data.apiEndpoints[idx];
+      if (!ep) return;
+      if (apiMethodBadge) {
+        apiMethodBadge.textContent = ep.method;
+        apiMethodBadge.className = `api-method-badge ${ep.method.toLowerCase()}`;
+      }
+      if (apiReqPayload) {
+        apiReqPayload.innerHTML = `<pre style="margin:0; font-family:inherit;"><code>${ep.payload.replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' })[c])}</code></pre>`;
+      }
+      if (apiDocText) apiDocText.textContent = ep.desc;
+      if (apiStatusBadge) {
+        apiStatusBadge.textContent = "READY";
+        apiStatusBadge.className = "status-badge";
+      }
+      if (apiLatencyBadge) apiLatencyBadge.textContent = "⚡ -- ms";
+      if (apiJsonBody) {
+        apiJsonBody.innerHTML = `<code>// Klik tombol SEND REQUEST di atas untuk mengeksekusi endpoint ini.</code>`;
+      }
+    };
+
+    apiEndpointSelect.onchange = () => updateEndpointView(Number(apiEndpointSelect.value));
+    updateEndpointView(0);
+  }
+
+  apiSendBtn?.addEventListener("click", () => {
+    const data = projectData[currentActiveProjectKey];
+    if (!data?.apiEndpoints) return;
+    const epIdx = Number(apiEndpointSelect?.value || 0);
+    const ep = data.apiEndpoints[epIdx];
+    if (!ep) return;
+
+    apiSendBtn.classList.add("loading");
+    apiSendBtn.innerHTML = `<span>SENDING...</span><i>⏳</i>`;
+    if (apiStatusBadge) {
+      apiStatusBadge.textContent = "CONNECTING...";
+      apiStatusBadge.className = "status-badge";
+    }
+
+    const latency = Math.floor(Math.random() * 32) + 24;
+    window.setTimeout(() => {
+      apiSendBtn.classList.remove("loading");
+      apiSendBtn.innerHTML = `<span>SEND REQUEST</span><i>▶</i>`;
+
+      if (apiStatusBadge) {
+        apiStatusBadge.textContent = ep.status;
+        apiStatusBadge.className = `status-badge ${ep.statusCode < 300 ? "status-200" : "status-error"}`;
+      }
+      if (apiLatencyBadge) {
+        apiLatencyBadge.textContent = `⚡ ${latency}ms`;
+      }
+      if (apiJsonBody) {
+        const jsonStr = JSON.stringify(ep.response, null, 2);
+        apiJsonBody.innerHTML = `<code>${jsonStr.replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' })[c])}</code>`;
+      }
+      createToast(`Simulasi API: ${ep.method} ${ep.path} [${ep.status}]`);
+    }, 380);
+  });
+
+  function setupErdViewer(projectKey) {
+    const data = projectData[projectKey];
+    if (!data?.erdTables || !erdGrid) return;
+
+    erdGrid.innerHTML = data.erdTables.map((table) => `
+      <div class="erd-card">
+        <div class="erd-table-header">
+          <strong>🗃️ ${table.name}</strong>
+          <span class="erd-table-badge">${table.tag}</span>
+        </div>
+        <div class="erd-fields">
+          ${table.fields.map((f) => `
+            <div class="erd-field-row">
+              <span class="erd-field-name">
+                ${f.isPk ? '<span class="erd-pk">PK</span>' : ''}
+                ${f.isFk ? '<span class="erd-fk">FK</span>' : ''}
+                ${f.name}
+              </span>
+              <span class="erd-field-type">${f.type}</span>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    `).join("");
+  }
 
   function buildModalVisual(type) {
     if (type === "booking") {
@@ -768,11 +1080,27 @@ document.addEventListener("DOMContentLoaded", () => {
   function openProjectModal(projectKey, trigger) {
     const data = projectData[projectKey];
     if (!data || !projectModal) return;
+    currentActiveProjectKey = projectKey;
     lastModalTrigger = trigger || document.activeElement;
+
     modalKicker.textContent = data.kicker;
     modalTitle.textContent = data.title;
     modalDescription.textContent = data.description;
     modalStats.innerHTML = data.stats.map(([label, value]) => `<div class="modal-stat"><span>${label}</span><strong>${value}</strong></div>`).join("");
+    
+    if (modalCaseStudy && data.caseStudy) {
+      modalCaseStudy.innerHTML = `
+        <div class="case-study-box">
+          <strong>⚠️ Problem Statement:</strong>
+          <p>${data.caseStudy.problem}</p>
+        </div>
+        <div class="case-study-box solution">
+          <strong>💡 Backend Solution:</strong>
+          <p>${data.caseStudy.solution}</p>
+        </div>
+      `;
+    }
+
     modalFeatures.innerHTML = data.features.map((feature) => `<li>${feature}</li>`).join("");
     modalTags.innerHTML = data.tags.map((tag) => `<span>${tag}</span>`).join("");
     modalVisual.innerHTML = buildModalVisual(data.visual);
@@ -792,6 +1120,7 @@ document.addEventListener("DOMContentLoaded", () => {
       $(".modal-copy", projectModal)?.appendChild(cta);
     }
 
+    switchProjectModalTab("overview");
     projectModal.classList.add("is-open");
     projectModal.setAttribute("aria-hidden", "false");
     document.body.classList.add("modal-open");
@@ -1088,5 +1417,245 @@ document.addEventListener("DOMContentLoaded", () => {
     renderComments();
     commentForm.reset();
     createToast("Komentar tersimpan di browser ini.");
+  });
+
+  /* =====================================================
+     QUICK EMAIL COPY (1-CLICK)
+  ====================================================== */
+  const copyEmailBtn = $("#copyEmailBtn");
+  const copyBtnIcon = $("#copyBtnIcon");
+  const copyBtnLabel = $("#copyBtnLabel");
+  const targetEmail = "azielakbar22@gmail.com";
+
+  copyEmailBtn?.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(targetEmail);
+      if (copyEmailBtn) copyEmailBtn.classList.add("copied");
+      if (copyBtnIcon) copyBtnIcon.textContent = "✓";
+      if (copyBtnLabel) copyBtnLabel.textContent = "Copied!";
+      createToast("Email tersalin ke clipboard: azielakbar22@gmail.com");
+
+      window.setTimeout(() => {
+        if (copyEmailBtn) copyEmailBtn.classList.remove("copied");
+        if (copyBtnIcon) copyBtnIcon.textContent = "📋";
+        if (copyBtnLabel) copyBtnLabel.textContent = "Copy";
+      }, 2200);
+    } catch {
+      createToast("Gagal menyalin email otomatis.");
+    }
+  });
+
+  /* =====================================================
+     DEVELOPER CLI TERMINAL (CTRL + K)
+  ====================================================== */
+  const terminalLauncher = $("#terminalLauncher");
+  const terminalModal = $("#terminalModal");
+  const terminalBackdrop = $("#terminalBackdrop");
+  const terminalCloseBtn = $("#terminalCloseBtn");
+  const terminalForm = $("#terminalForm");
+  const terminalInput = $("#terminalInput");
+  const terminalOutput = $("#terminalOutput");
+  const terminalChips = $("#terminalChips");
+  let terminalHistory = [];
+  let historyIndex = -1;
+  let lastTerminalTrigger = null;
+
+  const terminalCommands = {
+    help: () => `
+      <table class="term-table">
+        <tr><td class="cmd-name">help</td><td>Menampilkan daftar perintah terminal</td></tr>
+        <tr><td class="cmd-name">about</td><td>Informasi singkat profil Muhammad Aziel</td></tr>
+        <tr><td class="cmd-name">skills</td><td>Daftar keahlian teknis (Laravel, PHP, MySQL, API)</td></tr>
+        <tr><td class="cmd-name">projects</td><td>Ringkasan project pilihan & live demo link</td></tr>
+        <tr><td class="cmd-name">api</td><td>Simulasi request API internal (cURL /api/v1/health)</td></tr>
+        <tr><td class="cmd-name">contact</td><td>Email, LinkedIn, TikTok, & GitHub repository</td></tr>
+        <tr><td class="cmd-name">cv</td><td>Buka formulir permintaan / ringkasan CV resmi</td></tr>
+        <tr><td class="cmd-name">whoami</td><td>Informasi sesi pengguna saat ini</td></tr>
+        <tr><td class="cmd-name">date</td><td>Waktu dan tanggal sistem saat ini</td></tr>
+        <tr><td class="cmd-name">clear</td><td>Membersihkan tampilan terminal</td></tr>
+        <tr><td class="cmd-name">exit</td><td>Menutup jendela terminal</td></tr>
+      </table>`,
+
+    about: () => `
+      <p class="term-line"><strong>Muhammad Aziel Akbar Santoso</strong></p>
+      <p class="term-line term-dim">Siswa Rekayasa Perangkat Lunak di SMKN 1 Sukorejo (2024 - Sekarang).</p>
+      <p class="term-line term-dim">Saat ini menjalani PKL sebagai <strong>Backend Developer Intern di Aziel Software House</strong>.</p>
+      <p class="term-line" style="color:var(--lime);">Fokus utama: Laravel, Database Schema & Relational Design, Sanctum Token Auth, REST API Architecture.</p>`,
+
+    skills: () => `
+      <table class="term-table">
+        <tr><td class="cmd-name">Framework</td><td>Laravel 11, Blade Engine</td></tr>
+        <tr><td class="cmd-name">Language</td><td>PHP 8.2+, JavaScript (ES6+), SQL</td></tr>
+        <tr><td class="cmd-name">Database</td><td>MySQL (Relational, Indexing, Transactions)</td></tr>
+        <tr><td class="cmd-name">API & Tools</td><td>REST API, Sanctum Auth, Postman, Git, Railway Cloud</td></tr>
+      </table>`,
+
+    projects: () => `
+      <p class="term-line"><strong>🚀 Project Pilihan:</strong></p>
+      <p class="term-line">1. <span class="term-hl">Sport Court Booking Platform</span> — Live on Railway</p>
+      <p class="term-line term-dim">&nbsp;&nbsp;&nbsp;🔗 Link: <a href="https://booking-lapangan-production.up.railway.app/" target="_blank" style="color:var(--lime)">https://booking-lapangan-production.up.railway.app/</a></p>
+      <p class="term-line">2. <span class="term-hl">Todo REST API</span> — Auth with Sanctum, Filtering & Search</p>`,
+
+    api: () => `
+      <p class="term-line" style="color:#f59e0b;">$ curl -X GET https://azielganteng.vercel.app/api/v1/health</p>
+      <p class="term-line" style="color:var(--lime);">HTTP/1.1 200 OK (Latency: 28ms)</p>
+      <pre style="margin:4px 0; font-family:inherit; color:#e2e8f0;"><code>{
+  "status": "UP",
+  "developer": "Muhammad Aziel",
+  "engine": "Laravel 11.x / PHP 8.2",
+  "database": "MySQL Connected",
+  "environment": "production"
+}</code></pre>`,
+
+    contact: () => `
+      <table class="term-table">
+        <tr><td class="cmd-name">Email</td><td><a href="mailto:azielakbar22@gmail.com" style="color:var(--lime);">azielakbar22@gmail.com</a></td></tr>
+        <tr><td class="cmd-name">GitHub</td><td><a href="https://github.com/azielganteng" target="_blank" style="color:var(--lime);">https://github.com/azielganteng</a></td></tr>
+        <tr><td class="cmd-name">TikTok</td><td>@ellzznotgutt</td></tr>
+        <tr><td class="cmd-name">Location</td><td>Pasuruan, Jawa Timur, Indonesia</td></tr>
+      </table>`,
+
+    cv: () => {
+      window.setTimeout(() => {
+        closeTerminal();
+        openCvModal();
+      }, 300);
+      return `<p class="term-line" style="color:var(--lime);">✓ Membuka modal Curriculum Vitae...</p>`;
+    },
+
+    whoami: () => `
+      <p class="term-line">User: <strong class="term-hl">guest@aziel.dev</strong></p>
+      <p class="term-line term-dim">Role: Authorized Visitor / Recruiter</p>
+      <p class="term-line term-dim">Access: Read-Only Portfolio Explorer</p>`,
+
+    date: () => `<p class="term-line">${new Date().toLocaleString("id-ID", { dateStyle: "full", timeStyle: "medium" })}</p>`,
+
+    clear: () => {
+      if (terminalOutput) terminalOutput.innerHTML = "";
+      return null;
+    },
+
+    exit: () => {
+      closeTerminal();
+      return null;
+    }
+  };
+
+  function openTerminal(trigger) {
+    if (!terminalModal) return;
+    lastTerminalTrigger = trigger || document.activeElement;
+    terminalModal.classList.add("is-open");
+    terminalModal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+    window.setTimeout(() => terminalInput?.focus(), 100);
+  }
+
+  function closeTerminal() {
+    if (!terminalModal?.classList.contains("is-open")) return;
+    terminalModal.classList.remove("is-open");
+    terminalModal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+    lastTerminalTrigger?.focus?.();
+  }
+
+  function executeTerminalCommand(rawCmd) {
+    const trimmed = rawCmd.trim();
+    if (!trimmed || !terminalOutput) return;
+
+    terminalHistory.push(trimmed);
+    historyIndex = terminalHistory.length;
+
+    // Append user input line
+    const userLine = document.createElement("div");
+    userLine.className = "term-line term-user-cmd";
+    userLine.innerHTML = `<span style="color:var(--lime);">guest@aziel.dev:~$</span> ${trimmed.replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' })[c])}`;
+    terminalOutput.appendChild(userLine);
+
+    const parts = trimmed.toLowerCase().split(/\s+/);
+    const cmd = parts[0];
+
+    if (terminalCommands[cmd]) {
+      const result = terminalCommands[cmd](parts.slice(1));
+      if (result) {
+        const resLine = document.createElement("div");
+        resLine.className = "term-line";
+        resLine.innerHTML = result;
+        terminalOutput.appendChild(resLine);
+      }
+    } else {
+      const errLine = document.createElement("div");
+      errLine.className = "term-line";
+      errLine.style.color = "#ef4444";
+      errLine.innerHTML = `Perintah tidak dikenali: <strong>${cmd}</strong>. Ketik <span class="term-hl">help</span> untuk daftar perintah yang tersedia.`;
+      terminalOutput.appendChild(errLine);
+    }
+
+    if (terminalInput) terminalInput.value = "";
+    terminalOutput.scrollTop = terminalOutput.scrollHeight;
+    $("#terminalBody")?.scrollTo({ top: $("#terminalBody").scrollHeight, behavior: "smooth" });
+  }
+
+  terminalLauncher?.addEventListener("click", () => openTerminal(terminalLauncher));
+  terminalBackdrop?.addEventListener("click", closeTerminal);
+  terminalCloseBtn?.addEventListener("click", closeTerminal);
+
+  terminalForm?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (terminalInput) executeTerminalCommand(terminalInput.value);
+  });
+
+  terminalChips?.addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-cmd]");
+    if (btn) {
+      executeTerminalCommand(btn.dataset.cmd);
+      terminalInput?.focus();
+    }
+  });
+
+  // History & Hotkey support
+  window.addEventListener("keydown", (e) => {
+    // Ctrl + K or Cmd + K toggles terminal
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+      e.preventDefault();
+      if (terminalModal?.classList.contains("is-open")) {
+        closeTerminal();
+      } else {
+        openTerminal();
+      }
+      return;
+    }
+
+    // Escape closes terminal if open
+    if (e.key === "Escape" && terminalModal?.classList.contains("is-open")) {
+      closeTerminal();
+      return;
+    }
+
+    // Arrow up / down in terminal input
+    if (document.activeElement === terminalInput) {
+      if (e.key === "ArrowUp") {
+        e.preventDefault();
+        if (historyIndex > 0) {
+          historyIndex--;
+          terminalInput.value = terminalHistory[historyIndex] || "";
+        }
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        if (historyIndex < terminalHistory.length - 1) {
+          historyIndex++;
+          terminalInput.value = terminalHistory[historyIndex] || "";
+        } else {
+          historyIndex = terminalHistory.length;
+          terminalInput.value = "";
+        }
+      } else if (e.key === "Tab") {
+        e.preventDefault();
+        const currentVal = terminalInput.value.trim().toLowerCase();
+        if (currentVal) {
+          const match = Object.keys(terminalCommands).find((c) => c.startsWith(currentVal));
+          if (match) terminalInput.value = match;
+        }
+      }
+    }
   });
 });

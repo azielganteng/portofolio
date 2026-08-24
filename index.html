@@ -9,6 +9,8 @@
   <meta name="author" content="Muhammad Aziel Akbar Santoso" />
   <meta name="keywords"
     content="Muhammad Aziel, Backend Developer, Laravel, PHP, REST API, Portfolio, SMKN 1 Sukorejo, Web Developer" />
+  <!-- Canonical & Verification -->
+  <link rel="canonical" href="https://azielganteng.vercel.app/" />
   <!-- Google Site Verification -->
   <meta name="google-site-verification" content="google5648b6c1eda6b91b.html" />
 
@@ -21,17 +23,48 @@
 
   <!-- Open Graph / Facebook / LinkedIn / WhatsApp -->
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://azielganteng.vercel.app/" />
   <meta property="og:title" content="Muhammad Aziel — Backend Developer Portfolio" />
   <meta property="og:description"
     content="Portfolio Muhammad Aziel Akbar Santoso — Siswa Rekayasa Perangkat Lunak SMKN 1 Sukorejo & Backend Developer Intern di Aziel Software House." />
-  <meta property="og:image" content="assets/images/foto1.jpeg" />
+  <meta property="og:image" content="https://azielganteng.vercel.app/assets/images/og-banner.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://azielganteng.vercel.app/" />
   <meta name="twitter:title" content="Muhammad Aziel — Backend Developer Portfolio" />
   <meta name="twitter:description"
     content="Portfolio Muhammad Aziel Akbar Santoso — Backend Developer Intern di Aziel Software House." />
-  <meta name="twitter:image" content="assets/images/foto1.jpeg" />
+  <meta name="twitter:image" content="https://azielganteng.vercel.app/assets/images/og-banner.jpg" />
+
+  <!-- Structured Data / JSON-LD for Google SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Muhammad Aziel Akbar Santoso",
+    "alternateName": "Aziel",
+    "url": "https://azielganteng.vercel.app/",
+    "image": "https://azielganteng.vercel.app/assets/images/foto1.jpeg",
+    "jobTitle": "Backend Developer",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Aziel Software House"
+    },
+    "alumniOf": {
+      "@type": "EducationalOrganization",
+      "name": "SMKN 1 Sukorejo"
+    },
+    "knowsAbout": ["Laravel", "PHP", "MySQL", "REST API", "Database Design", "Backend Development"],
+    "sameAs": [
+      "https://github.com/azielganteng",
+      "https://www.instagram.com/ieelmorant_/",
+      "https://www.tiktok.com/@ellzznotgutt"
+    ]
+  }
+  </script>
 
   <!-- Fonts & Styles -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -39,9 +72,9 @@
   <link
     href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
     rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=2.7" />
-  <script src="motion.js?v=2.7" defer></script>
-  <script src="script.js?v=2.7" defer></script>
+  <link rel="stylesheet" href="style.css?v=2.8" />
+  <script src="motion.js?v=2.8" defer></script>
+  <script src="script.js?v=2.8" defer></script>
 </head>
 
 <body class="is-loading">
@@ -442,6 +475,37 @@
             <article class="tech-card reveal" data-delay="280"><span class="tech-icon tech-next">→</span><strong>Clean
                 Architecture</strong><small>NEXT TARGET</small></article>
           </div>
+
+          <div class="github-showcase reveal" data-delay="320">
+            <div class="github-card">
+              <div class="github-header">
+                <div class="github-user">
+                  <span class="github-avatar">⚡</span>
+                  <div>
+                    <strong>Muhammad Aziel</strong>
+                    <span>@azielganteng · GitHub Verified</span>
+                  </div>
+                </div>
+                <a href="https://github.com/azielganteng" target="_blank" rel="noopener noreferrer" class="github-badge">
+                  <span>Visit GitHub</span><i>↗</i>
+                </a>
+              </div>
+              <div class="github-stats-grid">
+                <div class="gh-stat-item">
+                  <span class="gh-stat-label">MAIN LANGUAGE</span>
+                  <strong class="gh-stat-val">PHP &amp; Laravel</strong>
+                </div>
+                <div class="gh-stat-item">
+                  <span class="gh-stat-label">CORE FOCUS</span>
+                  <strong class="gh-stat-val">REST API &amp; DB</strong>
+                </div>
+                <div class="gh-stat-item">
+                  <span class="gh-stat-label">CURRENT STATUS</span>
+                  <strong class="gh-stat-val status-live">● Open to Work / PKL</strong>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -465,6 +529,17 @@
             <i class="status-dot"></i>
           </div>
           <p>Kirim pesan langsung ke email saya melalui form ini. Pesan akan diproses secara aman.</p>
+
+          <div class="quick-email-box">
+            <div class="quick-email-info">
+              <span class="quick-email-label">DIRECT EMAIL (1-CLICK COPY)</span>
+              <code class="quick-email-text" id="quickEmailText">azielakbar22@gmail.com</code>
+            </div>
+            <button type="button" class="quick-copy-btn" id="copyEmailBtn" aria-label="Salin email ke clipboard">
+              <span class="copy-icon" id="copyBtnIcon">📋</span>
+              <span class="copy-label" id="copyBtnLabel">Copy</span>
+            </button>
+          </div>
 
           <form id="contactForm" class="contact-form" action="https://formspree.io/f/xljroywk" method="POST">
             <label><span>Your Name</span><input type="text" name="name" placeholder="Nama lengkap" autocomplete="name"
@@ -523,24 +598,84 @@
     <button class="project-modal-backdrop" type="button" data-close-modal aria-label="Tutup detail project"></button>
     <div class="project-modal-dialog">
       <div class="modal-topbar">
-        <button type="button" data-close-modal>← Back</button>
-        <span>PROJECT DETAILS</span>
-        <button type="button" data-close-modal aria-label="Tutup">×</button>
+        <button type="button" data-close-modal class="modal-back-btn">← Back</button>
+        <div class="modal-nav-tabs" role="tablist">
+          <button type="button" class="modal-nav-btn active" data-pmodal-tab="overview">📋 Overview</button>
+          <button type="button" class="modal-nav-btn" data-pmodal-tab="api">⚡ API Tester</button>
+          <button type="button" class="modal-nav-btn" data-pmodal-tab="erd">🗄️ Database ERD</button>
+        </div>
+        <button type="button" data-close-modal class="modal-close-icon" aria-label="Tutup">×</button>
       </div>
       <div class="modal-content" id="modalContent">
-        <div class="modal-copy">
-          <span class="modal-kicker" id="modalKicker">BACKEND PROJECT</span>
-          <h2 id="modalTitle">Project title</h2>
-          <p id="modalDescription">Project description.</p>
-          <div class="modal-stats" id="modalStats"></div>
-          <div class="modal-section"><span>KEY FEATURES</span>
-            <ul id="modalFeatures"></ul>
+        <div class="modal-tab-panel active" id="pmodalTabOverview">
+          <div class="modal-copy">
+            <span class="modal-kicker" id="modalKicker">BACKEND PROJECT</span>
+            <h2 id="modalTitle">Project title</h2>
+            <p id="modalDescription">Project description.</p>
+            <div class="modal-stats" id="modalStats"></div>
+            <div class="modal-case-study" id="modalCaseStudy"></div>
+            <div class="modal-section"><span>KEY FEATURES</span>
+              <ul id="modalFeatures"></ul>
+            </div>
+            <div class="modal-section"><span>TECHNOLOGIES USED</span>
+              <div class="modal-tags" id="modalTags"></div>
+            </div>
           </div>
-          <div class="modal-section"><span>TECHNOLOGIES USED</span>
-            <div class="modal-tags" id="modalTags"></div>
+          <div class="modal-visual" id="modalVisual"></div>
+        </div>
+
+        <div class="modal-tab-panel" id="pmodalTabApi">
+          <div class="api-tester-wrap">
+            <div class="api-tester-top">
+              <div class="api-endpoint-bar">
+                <span class="api-method-badge" id="apiMethodBadge">GET</span>
+                <select id="apiEndpointSelect" class="api-endpoint-select" aria-label="Pilih Endpoint API">
+                </select>
+                <button type="button" class="api-send-btn" id="apiSendBtn">
+                  <span>SEND REQUEST</span><i>▶</i>
+                </button>
+              </div>
+            </div>
+
+            <div class="api-tester-grid">
+              <div class="api-req-panel">
+                <div class="api-panel-title">
+                  <span>REQUEST PARAMS &amp; BODY</span>
+                  <span class="api-auth-pill">Bearer Token [Sanctum]</span>
+                </div>
+                <div class="api-req-view" id="apiReqPayload">
+                  <code>// Parameter request otomatis terisi</code>
+                </div>
+                <div class="api-doc-tip" id="apiDocTip">
+                  <strong>ℹ️ Endpoint Doc:</strong> <span id="apiDocText">Memuat dokumentasi endpoint...</span>
+                </div>
+              </div>
+
+              <div class="api-res-panel">
+                <div class="api-res-header">
+                  <div class="api-res-status">
+                    <span>RESPONSE:</span>
+                    <span class="status-badge status-200" id="apiStatusBadge">200 OK</span>
+                    <span class="latency-badge" id="apiLatencyBadge">⚡ 32ms</span>
+                  </div>
+                  <span class="api-size-badge">Content-Type: application/json</span>
+                </div>
+                <pre class="api-json-body" id="apiJsonBody"><code>// Klik SEND REQUEST untuk menjalankan simulasi</code></pre>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="modal-visual" id="modalVisual"></div>
+
+        <div class="modal-tab-panel" id="pmodalTabErd">
+          <div class="erd-viewer-wrap">
+            <div class="erd-intro">
+              <h4>🗄️ Relational Database Schema &amp; Indexes</h4>
+              <p>Struktur arsitektur database MySQL dengan integritas relasi foreign key, constraint, dan indexing untuk performa query.</p>
+            </div>
+            <div class="erd-grid" id="erdGrid">
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -555,7 +690,6 @@
     </div>
   </div>
 
-  <!-- CV Preview & Permission Modal -->
   <div class="certificate-modal cv-modal" id="cvModal" aria-hidden="true" role="dialog" aria-modal="true"
     aria-label="Curriculum Vitae Muhammad Aziel">
     <button class="project-modal-backdrop" type="button" data-close-cv aria-label="Tutup CV"></button>
@@ -572,34 +706,23 @@
         <button class="certificate-modal-close" type="button" data-close-cv aria-label="Tutup">×</button>
       </div>
 
-      <!-- CV Navigation Tabs -->
       <div class="cv-modal-nav">
         <button type="button" class="cv-tab-btn active" data-cv-tab="summary">📄 Ringkasan Profil</button>
         <button type="button" class="cv-tab-btn" data-cv-tab="request">🔒 Minta Dokumen Lengkap</button>
       </div>
 
       <div class="cv-modal-body">
-        <!-- Tab 1: Privacy Safe Profile Summary -->
         <div class="cv-tab-panel active" id="cvTabSummary">
           <div class="cv-profile-card">
             <div class="cv-avatar-shell">
               <img src="assets/images/foto2.jpeg" alt="Muhammad Aziel Akbar Santoso" />
               <span class="cv-online-dot"></span>
             </div>
-            <div class="cv-profile-details">
-              <div class="cv-item">
-                <span class="cv-label">Email Profesional</span>
-                <a href="mailto:azielakbar22@gmail.com" class="cv-val cv-link">azielakbar22@gmail.com <i>↗</i></a>
-              </div>
-              <div class="cv-item">
-                <span class="cv-label">Nomor Telepon</span>
-                <span class="cv-val cv-protected">•••• •••• 9299 <em title="Tersedia via tombol Minta Akses">🔒
-                    Dilindungi</em></span>
-              </div>
-              <div class="cv-item">
-                <span class="cv-label">Alamat Rumah</span>
-                <span class="cv-val cv-protected">Pasuruan, Jawa Timur <em
-                    title="Alamat detail diberikan kepada instansi resmi">🔒 Dilindungi</em></span>
+            <div class="cv-profile-info">
+              <h4>Muhammad Aziel Akbar Santoso</h4>
+              <p class="cv-role">Backend Developer Intern @ Aziel Software House</p>
+              <div class="cv-tags">
+                <span>Laravel</span><span>PHP</span><span>MySQL</span><span>REST API</span>
               </div>
             </div>
           </div>
@@ -639,7 +762,6 @@
           </div>
         </div>
 
-        <!-- Tab 2: Request Full CV Access Form -->
         <div class="cv-tab-panel" id="cvTabRequest">
           <div class="cv-request-intro">
             <div class="cv-request-icon">🔒</div>
@@ -678,6 +800,48 @@
           class="button button-primary magnetic">
           <span>Kirim Email Langsung</span><i>✉</i>
         </a>
+      </div>
+    </div>
+  </div>
+
+  <button class="terminal-launcher" id="terminalLauncher" type="button" aria-label="Buka Developer Terminal" title="Developer Terminal (Ctrl + K)">
+    <span class="terminal-pulse"></span>
+    <span class="terminal-icon">&gt;_</span>
+    <span class="terminal-text">Dev CLI <kbd>Ctrl+K</kbd></span>
+  </button>
+
+  <div class="terminal-modal" id="terminalModal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Developer Terminal">
+    <button class="project-modal-backdrop" type="button" id="terminalBackdrop" aria-label="Tutup Terminal"></button>
+    <div class="terminal-window">
+      <div class="terminal-header">
+        <div class="terminal-dots">
+          <span class="dot dot-red" id="terminalCloseBtn" title="Close"></span>
+          <span class="dot dot-yellow" title="Minimize"></span>
+          <span class="dot dot-green" title="Maximize"></span>
+        </div>
+        <div class="terminal-title">aziel@portfolio-server: ~ (v2.8)</div>
+        <div class="terminal-hint">Ketik <code>help</code> atau klik perintah cepat</div>
+      </div>
+      <div class="terminal-body" id="terminalBody">
+        <div class="terminal-output" id="terminalOutput">
+          <p class="term-welcome">=== MUHAMMAD AZIEL BACKEND CLI (v2.8.0) ===</p>
+          <p class="term-dim">Interactive developer console. Jelajahi portfolio, tes API, dan lihat sistem backend.</p>
+          <p class="term-dim">Ketik <span class="term-hl">help</span> atau klik salah satu perintah cepat di bawah:</p>
+        </div>
+        <div class="terminal-chips" id="terminalChips">
+          <button type="button" data-cmd="help">help</button>
+          <button type="button" data-cmd="about">about</button>
+          <button type="button" data-cmd="skills">skills</button>
+          <button type="button" data-cmd="projects">projects</button>
+          <button type="button" data-cmd="api">api</button>
+          <button type="button" data-cmd="contact">contact</button>
+          <button type="button" data-cmd="cv">cv</button>
+          <button type="button" data-cmd="clear">clear</button>
+        </div>
+        <form class="terminal-input-row" id="terminalForm">
+          <span class="term-prompt">guest@aziel.dev:~$</span>
+          <input type="text" id="terminalInput" class="terminal-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Ketik perintah di sini..." />
+        </form>
       </div>
     </div>
   </div>

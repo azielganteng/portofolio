@@ -1516,7 +1516,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const pinnedWelcomeComment = {
     id: "pinned-welcome",
     name: "Aziel (Owner)",
-    text: "Halo semuanya! Selamat datang di portfolio backend saya. Silakan tinggalkan feedback atau pesan Anda di sini.",
+    text: "Halo selamat datang di website aku gue wok 😹  😹 ",
     time: "Pinned 📌",
     timestamp: 9999999999999,
     isPinned: true

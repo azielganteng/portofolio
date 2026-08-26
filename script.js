@@ -1510,19 +1510,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const adminAuthForm = $("#adminAuthForm");
   const adminPinInput = $("#adminPinInput");
   const adminAuthError = $("#adminAuthError");
-  const localCacheKey = "azielPortfolioFirebaseCacheV1";
+  const localCacheKey = "azielPortfolioFirebaseCacheV2";
 
-  const defaultComments = [
-    { id: "def-1", name: "Aziel (Owner)", text: "Halo semuanya! Selamat datang di portfolio saya. Silakan tinggalkan feedback di sini.", time: "26 Agu 2026", timestamp: 1787600000000 },
-    { id: "def-2", name: "Tech Recruiter", text: "Portfolio-nya clean dan interaktif banget! Keep up the good work Aziel.", time: "26 Agu 2026", timestamp: 1787590000000 }
-  ];
+  // Pinned Welcome Message (Always stays at top)
+  const pinnedWelcomeComment = {
+    id: "pinned-welcome",
+    name: "Aziel (Owner)",
+    text: "Halo semuanya! Selamat datang di portfolio backend saya. Silakan tinggalkan feedback atau pesan Anda di sini.",
+    time: "Pinned 📌",
+    timestamp: 9999999999999,
+    isPinned: true
+  };
 
   let cachedComments = (() => {
     try {
       const stored = JSON.parse(localStorage.getItem(localCacheKey) || "null");
-      return Array.isArray(stored) && stored.length > 0 ? stored : defaultComments;
+      return Array.isArray(stored) && stored.length > 0 ? stored : [pinnedWelcomeComment];
     } catch {
-      return defaultComments;
+      return [pinnedWelcomeComment];
     }
   })();
 
@@ -1603,10 +1608,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   adminClearAllBtn?.addEventListener("click", async () => {
     if (!isAdminLoggedIn()) return;
-    if (confirm("⚠️ Yakin ingin menghapus SEMUA komentar di Cloud Database?")) {
+    if (confirm("⚠️ Yakin ingin menghapus SEMUA komentar publik di Cloud Database?")) {
       try {
         await fetch(`${FIREBASE_DB_URL}.json`, { method: "DELETE" });
-        cachedComments = defaultComments;
+        cachedComments = [pinnedWelcomeComment];
         saveLocalCache(cachedComments);
         renderComments();
         createToast("✓ Semua komentar cloud berhasil dihapus oleh Admin.");
@@ -1621,7 +1626,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const isAuth = isAdminLoggedIn();
 
     if (!cachedComments || cachedComments.length === 0) {
-      commentList.innerHTML = `<p style="color:var(--muted); font-size:0.78rem; text-align:center; padding:18px 0; font-family:var(--font-mono);">Belum ada komentar publik. Jadilah yang pertama berkomentar!</p>`;
+      commentList.innerHTML = `<p style="color:var(--muted); font-size:0.78rem; text-align:center; padding:18px 0; font-family:var(--font-mono);">Belum ada komentar publik.</p>`;
       return;
     }
 
@@ -1630,16 +1635,18 @@ document.addEventListener("DOMContentLoaded", () => {
       const safeText = String(comment.text || "").replace(/[<>&"']/g, "");
       const initials = safeName.slice(0, 2).toUpperCase();
       const isAdmin = safeName.toLowerCase().includes("aziel");
+      const isPinned = comment.isPinned || comment.id === "pinned-welcome";
       const commentId = comment.id || idx;
 
       return `
-        <article class="comment-item">
+        <article class="comment-item ${isPinned ? 'comment-pinned' : ''}">
           <span class="comment-avatar ${isAdmin ? 'admin-avatar' : ''}">${initials}</span>
           <div class="comment-copy">
-            <div style="display:flex; align-items:center; gap:8px;">
+            <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
               <strong>${safeName}</strong>
               ${isAdmin ? '<span style="font-size:0.55rem; background:rgba(184,255,107,0.15); color:var(--lime); padding:1px 6px; border-radius:4px; border:1px solid rgba(184,255,107,0.3); font-family:var(--font-mono);">OWNER</span>' : ''}
-              ${isAuth ? `<button type="button" class="comment-delete-btn" data-delete-id="${commentId}" data-delete-idx="${idx}" title="Hapus komentar ini dari cloud">🗑️ Hapus</button>` : ''}
+              ${isPinned ? '<span style="font-size:0.55rem; background:rgba(59,130,246,0.15); color:#93c5fd; padding:1px 6px; border-radius:4px; border:1px solid rgba(59,130,246,0.3); font-family:var(--font-mono);">PINNED 📌</span>' : ''}
+              ${isAuth && !isPinned ? `<button type="button" class="comment-delete-btn" data-delete-id="${commentId}" data-delete-idx="${idx}" title="Hapus komentar ini dari cloud">🗑️ Hapus</button>` : ''}
             </div>
             <p>${safeText}</p>
           </div>
@@ -1655,8 +1662,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!response.ok) throw new Error("Network error");
       const data = await response.json();
 
+      let cloudList = [];
       if (data && typeof data === "object") {
-        const cloudList = Object.entries(data).map(([id, val]) => ({
+        cloudList = Object.entries(data).map(([id, val]) => ({
           id,
           name: val.name || "Anonymous",
           text: val.text || "",
@@ -1665,11 +1673,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }));
         // Sort descending (newest first)
         cloudList.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-        cachedComments = cloudList.length > 0 ? cloudList : defaultComments;
-      } else {
-        cachedComments = defaultComments;
       }
 
+      // Always include pinned welcome comment at the top
+      cachedComments = [pinnedWelcomeComment, ...cloudList];
       saveLocalCache(cachedComments);
       renderComments();
     } catch {
@@ -1686,9 +1693,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const idx = Number(deleteBtn.dataset.deleteIdx);
       const targetComment = cachedComments[idx];
 
+      if (targetComment?.isPinned) {
+        createToast("Pesan pinned owner tidak dapat dihapus.");
+        return;
+      }
+
       if (confirm(`Hapus komentar dari "${targetComment?.name}"?`)) {
         try {
-          if (commentId && !commentId.startsWith("def-")) {
+          if (commentId && !commentId.startsWith("pinned-")) {
             await fetch(`${FIREBASE_DB_URL}/${commentId}.json`, { method: "DELETE" });
           }
           cachedComments.splice(idx, 1);
@@ -1703,9 +1715,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Handle Comment Submission (to Firebase Realtime Database)
+  // Handle Comment Submission (with Anti-Double Submit Debounce)
+  let isSubmittingComment = false;
+
   commentForm?.addEventListener("submit", async (event) => {
     event.preventDefault();
+    if (isSubmittingComment) return;
+
     const data = new FormData(commentForm);
     const name = String(data.get("commentName") || "").trim();
     const text = String(data.get("commentText") || "").trim();
@@ -1727,6 +1743,8 @@ document.addEventListener("DOMContentLoaded", () => {
       createToast(`Ditolak: Mengandung kata dilarang (${checkResult.word})`);
       return;
     }
+
+    isSubmittingComment = true;
 
     // 2. Format Timestamp
     const now = new Date();
@@ -1755,13 +1773,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!response.ok) throw new Error("Firebase error");
 
-      const resJson = await response.json();
-      newComment.id = resJson.name;
-
-      // Optimistic update
-      cachedComments.unshift(newComment);
-      saveLocalCache(cachedComments);
-      renderComments();
+      // Refetch latest from cloud to ensure clean single entry
+      await fetchCloudComments();
 
       if (commentStatus) {
         commentStatus.className = "comment-status success";
@@ -1775,12 +1788,9 @@ document.addEventListener("DOMContentLoaded", () => {
       commentForm.reset();
       createToast("✓ Komentar berhasil terbit secara global!");
     } catch {
-      // Local fallback if offline
-      cachedComments.unshift(newComment);
-      saveLocalCache(cachedComments);
-      renderComments();
-      createToast("Komentar tersimpan lokal (Cloud offline).");
+      createToast("Gagal mengirim ke Cloud Database.");
     } finally {
+      isSubmittingComment = false;
       if (commentSubmitBtn) {
         commentSubmitBtn.disabled = false;
         commentSubmitBtn.style.opacity = "";

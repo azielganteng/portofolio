@@ -1694,3 +1694,8 @@ main { position: relative; z-index: 1; }
   margin: 0;
   display: none;
 }
+
+.comment-item.comment-pinned {
+  border-left: 2px solid #3b82f6 !important;
+  background: rgba(59, 130, 246, 0.05) !important;
+}

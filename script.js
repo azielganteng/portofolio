@@ -1496,9 +1496,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* =====================================================
-     OWNER ADMIN COMMENT MODERATION
+     FIREBASE REALTIME DATABASE & OWNER ADMIN COMMENT SYSTEM
   ====================================================== */
+  const FIREBASE_DB_URL = "https://portofolio-9ede1-default-rtdb.firebaseio.com/comments";
   const ADMIN_MASTER_PIN = "aziel2026";
+
+  const commentForm = $("#commentForm");
+  const commentList = $("#commentList");
+  const commentStatus = $("#commentStatus");
+  const commentSubmitBtn = $("#commentSubmitBtn");
   const commentAdminToggle = $("#commentAdminToggle");
   const commentAdminBar = $("#commentAdminBar");
   const adminToggleIcon = $("#adminToggleIcon");
@@ -1510,6 +1516,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const adminAuthForm = $("#adminAuthForm");
   const adminPinInput = $("#adminPinInput");
   const adminAuthError = $("#adminAuthError");
+  const localCacheKey = "azielPortfolioFirebaseCacheV1";
+
+  const defaultComments = [
+    { id: "def-1", name: "Aziel (Owner)", text: "Halo semuanya! Selamat datang di portfolio saya. Silakan tinggalkan feedback di sini.", time: "26 Agu 2026", timestamp: 1787600000000 },
+    { id: "def-2", name: "Tech Recruiter", text: "Portfolio-nya clean dan interaktif banget! Keep up the good work Aziel.", time: "26 Agu 2026", timestamp: 1787590000000 }
+  ];
+
+  let cachedComments = (() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem(localCacheKey) || "null");
+      return Array.isArray(stored) && stored.length > 0 ? stored : defaultComments;
+    } catch {
+      return defaultComments;
+    }
+  })();
+
+  const saveLocalCache = (list) => {
+    try {
+      localStorage.setItem(localCacheKey, JSON.stringify(list.slice(0, 30)));
+    } catch { /* storage safe */ }
+  };
 
   const isAdminLoggedIn = () => sessionStorage.getItem("aziel_admin_auth") === "true";
 
@@ -1580,42 +1607,37 @@ document.addEventListener("DOMContentLoaded", () => {
     createToast("Mode Admin dinonaktifkan.");
   });
 
-  adminClearAllBtn?.addEventListener("click", () => {
+  adminClearAllBtn?.addEventListener("click", async () => {
     if (!isAdminLoggedIn()) return;
-    if (confirm("⚠️ Yakin ingin menghapus SEMUA komentar publik? Tindakan ini tidak dapat dibatalkan.")) {
-      saveComments(defaultComments);
-      renderComments();
-      createToast("✓ Semua komentar berhasil di-reset oleh Admin.");
+    if (confirm("⚠️ Yakin ingin menghapus SEMUA komentar di Cloud Database?")) {
+      try {
+        await fetch(`${FIREBASE_DB_URL}.json`, { method: "DELETE" });
+        cachedComments = defaultComments;
+        saveLocalCache(cachedComments);
+        renderComments();
+        createToast("✓ Semua komentar cloud berhasil dihapus oleh Admin.");
+      } catch {
+        createToast("Gagal menghapus database cloud.");
+      }
     }
   });
 
-  const getComments = () => {
-    try {
-      const stored = JSON.parse(localStorage.getItem(storageKey) || "null");
-      return Array.isArray(stored) && stored.length > 0 ? stored : defaultComments;
-    } catch {
-      return defaultComments;
-    }
-  };
-
-  const saveComments = (comments) => {
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(comments.slice(0, 15)));
-    } catch {
-      /* storage limit safe */
-    }
-  };
-
   const renderComments = () => {
     if (!commentList) return;
-    const comments = getComments();
     const isAuth = isAdminLoggedIn();
 
-    commentList.innerHTML = comments.map((comment, idx) => {
-      const safeName = String(comment.name).replace(/[<>&"']/g, "");
-      const safeText = String(comment.text).replace(/[<>&"']/g, "");
+    if (!cachedComments || cachedComments.length === 0) {
+      commentList.innerHTML = `<p style="color:var(--muted); font-size:0.78rem; text-align:center; padding:18px 0; font-family:var(--font-mono);">Belum ada komentar publik. Jadilah yang pertama berkomentar!</p>`;
+      return;
+    }
+
+    commentList.innerHTML = cachedComments.map((comment, idx) => {
+      const safeName = String(comment.name || "Anonymous").replace(/[<>&"']/g, "");
+      const safeText = String(comment.text || "").replace(/[<>&"']/g, "");
       const initials = safeName.slice(0, 2).toUpperCase();
       const isAdmin = safeName.toLowerCase().includes("aziel");
+      const commentId = comment.id || idx;
+
       return `
         <article class="comment-item">
           <span class="comment-avatar ${isAdmin ? 'admin-avatar' : ''}">${initials}</span>
@@ -1623,33 +1645,72 @@ document.addEventListener("DOMContentLoaded", () => {
             <div style="display:flex; align-items:center; gap:8px;">
               <strong>${safeName}</strong>
               ${isAdmin ? '<span style="font-size:0.55rem; background:rgba(184,255,107,0.15); color:var(--lime); padding:1px 6px; border-radius:4px; border:1px solid rgba(184,255,107,0.3); font-family:var(--font-mono);">OWNER</span>' : ''}
-              ${isAuth ? `<button type="button" class="comment-delete-btn" data-delete-comment="${idx}" title="Hapus komentar ini">🗑️ Hapus</button>` : ''}
+              ${isAuth ? `<button type="button" class="comment-delete-btn" data-delete-id="${commentId}" data-delete-idx="${idx}" title="Hapus komentar ini dari cloud">🗑️ Hapus</button>` : ''}
             </div>
             <p>${safeText}</p>
           </div>
-          <span class="comment-time">${comment.time || "Now"}</span>
+          <span class="comment-time">${comment.time || "Baru saja"}</span>
         </article>`;
     }).join("");
   };
-  updateAdminUI();
 
-  // Handle single comment delete click
-  commentList?.addEventListener("click", (e) => {
-    const deleteBtn = e.target.closest("[data-delete-comment]");
+  // Fetch comments from Firebase Cloud Database
+  async function fetchCloudComments() {
+    try {
+      const response = await fetch(`${FIREBASE_DB_URL}.json`);
+      if (!response.ok) throw new Error("Network error");
+      const data = await response.json();
+
+      if (data && typeof data === "object") {
+        const cloudList = Object.entries(data).map(([id, val]) => ({
+          id,
+          name: val.name || "Anonymous",
+          text: val.text || "",
+          time: val.time || "Baru saja",
+          timestamp: val.timestamp || 0
+        }));
+        // Sort descending (newest first)
+        cloudList.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+        cachedComments = cloudList.length > 0 ? cloudList : defaultComments;
+      } else {
+        cachedComments = defaultComments;
+      }
+
+      saveLocalCache(cachedComments);
+      renderComments();
+    } catch {
+      // Fallback to local cache if network drops
+      renderComments();
+    }
+  }
+
+  // Delete comment from Firebase Cloud
+  commentList?.addEventListener("click", async (e) => {
+    const deleteBtn = e.target.closest("[data-delete-id]");
     if (deleteBtn && isAdminLoggedIn()) {
-      const idx = Number(deleteBtn.dataset.deleteComment);
-      const comments = getComments();
-      const targetComment = comments[idx];
+      const commentId = deleteBtn.dataset.deleteId;
+      const idx = Number(deleteBtn.dataset.deleteIdx);
+      const targetComment = cachedComments[idx];
+
       if (confirm(`Hapus komentar dari "${targetComment?.name}"?`)) {
-        comments.splice(idx, 1);
-        saveComments(comments.length > 0 ? comments : defaultComments);
-        renderComments();
-        createToast("✓ Komentar berhasil dihapus!");
+        try {
+          if (commentId && !commentId.startsWith("def-")) {
+            await fetch(`${FIREBASE_DB_URL}/${commentId}.json`, { method: "DELETE" });
+          }
+          cachedComments.splice(idx, 1);
+          saveLocalCache(cachedComments);
+          renderComments();
+          createToast("✓ Komentar berhasil dihapus dari Cloud Database!");
+          fetchCloudComments();
+        } catch {
+          createToast("Gagal menghapus dari cloud.");
+        }
       }
     }
   });
 
-  commentForm?.addEventListener("submit", (event) => {
+  // Handle Comment Submission (to Firebase Realtime Database)
+  commentForm?.addEventListener("submit", async (event) => {
     event.preventDefault();
     const data = new FormData(commentForm);
     const name = String(data.get("commentName") || "").trim();
@@ -1657,7 +1718,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!name || !text) return;
 
-    // Run Auto-Moderation & Blacklist Check
+    // 1. Run Auto-Moderation & Blacklist Check
     const checkResult = checkBlacklist(name, text);
 
     if (checkResult.blocked) {
@@ -1673,26 +1734,72 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Format current date in Indonesian
+    // 2. Format Timestamp
     const now = new Date();
     const dateStr = `${now.toLocaleDateString("id-ID", { day: "numeric", month: "short" })}, ${now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}`;
 
-    const comments = getComments();
-    comments.unshift({ name, text, time: dateStr });
-    saveComments(comments);
-    renderComments();
+    const newComment = {
+      name,
+      text,
+      time: dateStr,
+      timestamp: Date.now()
+    };
 
-    if (commentStatus) {
-      commentStatus.className = "comment-status success";
-      commentStatus.style.display = "block";
-      commentStatus.innerHTML = `✓ <strong>Komentar Berhasil Terbit!</strong> Terima kasih atas feedback Anda.`;
-      window.setTimeout(() => {
-        if (commentStatus) commentStatus.style.display = "none";
-      }, 4000);
+    // 3. UI Loading State
+    if (commentSubmitBtn) {
+      commentSubmitBtn.disabled = true;
+      commentSubmitBtn.style.opacity = "0.7";
+      commentSubmitBtn.innerHTML = `<span>Menerbitkan...</span><i>⏳</i>`;
     }
 
-    commentForm.reset();
-    createToast("✓ Komentar berhasil diposting!");
+    try {
+      const response = await fetch(`${FIREBASE_DB_URL}.json`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newComment)
+      });
+
+      if (!response.ok) throw new Error("Firebase error");
+
+      const resJson = await response.json();
+      newComment.id = resJson.name;
+
+      // Optimistic update
+      cachedComments.unshift(newComment);
+      saveLocalCache(cachedComments);
+      renderComments();
+
+      if (commentStatus) {
+        commentStatus.className = "comment-status success";
+        commentStatus.style.display = "block";
+        commentStatus.innerHTML = `✓ <strong>Komentar Berhasil Terbit di Cloud Realtime!</strong> Muncul di semua perangkat.`;
+        window.setTimeout(() => {
+          if (commentStatus) commentStatus.style.display = "none";
+        }, 4000);
+      }
+
+      commentForm.reset();
+      createToast("✓ Komentar berhasil terbit secara global!");
+    } catch {
+      // Local fallback if offline
+      cachedComments.unshift(newComment);
+      saveLocalCache(cachedComments);
+      renderComments();
+      createToast("Komentar tersimpan lokal (Cloud offline).");
+    } finally {
+      if (commentSubmitBtn) {
+        commentSubmitBtn.disabled = false;
+        commentSubmitBtn.style.opacity = "";
+        commentSubmitBtn.innerHTML = `<span>Post Comment</span><i>↗</i>`;
+      }
+    }
+  });
+
+  // Initial load from cloud + polling every 12 seconds
+  fetchCloudComments();
+  setInterval(fetchCloudComments, 12000);
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) fetchCloudComments();
   });
 
   /* =====================================================

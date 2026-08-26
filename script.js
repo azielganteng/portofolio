@@ -1655,7 +1655,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }).join("");
   };
 
-  // Fetch comments from Firebase Cloud Database
+  // Fetch comments from Firebase Cloud Database with Smart De-Duplication
   async function fetchCloudComments() {
     try {
       const response = await fetch(`${FIREBASE_DB_URL}.json`);
@@ -1664,7 +1664,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       let cloudList = [];
       if (data && typeof data === "object") {
-        cloudList = Object.entries(data).map(([id, val]) => ({
+        const rawList = Object.entries(data).map(([id, val]) => ({
           id,
           name: val.name || "Anonymous",
           text: val.text || "",
@@ -1672,7 +1672,20 @@ document.addEventListener("DOMContentLoaded", () => {
           timestamp: val.timestamp || 0
         }));
         // Sort descending (newest first)
-        cloudList.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+        rawList.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+        // Deduplicate: merge identical comments sent within 8 seconds of each other
+        const seen = new Set();
+        for (const item of rawList) {
+          const key = `${item.name.toLowerCase().trim()}|${item.text.toLowerCase().trim()}|${Math.floor(item.timestamp / 8000)}`;
+          if (!seen.has(key)) {
+            seen.add(key);
+            cloudList.push(item);
+          } else if (item.id && !item.id.startsWith("pinned-")) {
+            // Clean up ghost duplicate in background
+            try { fetch(`${FIREBASE_DB_URL}/${item.id}.json`, { method: "DELETE" }); } catch {}
+          }
+        }
       }
 
       // Always include pinned welcome comment at the top
@@ -1715,12 +1728,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Handle Comment Submission (with Anti-Double Submit Debounce)
+  // Handle Comment Submission (with Strict Debounce & Rate Limiter)
   let isSubmittingComment = false;
+  let lastSubmitTimestamp = 0;
 
   commentForm?.addEventListener("submit", async (event) => {
     event.preventDefault();
-    if (isSubmittingComment) return;
+    const nowTime = Date.now();
+    if (isSubmittingComment || (nowTime - lastSubmitTimestamp < 3000)) return;
 
     const data = new FormData(commentForm);
     const name = String(data.get("commentName") || "").trim();
@@ -1745,6 +1760,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     isSubmittingComment = true;
+    lastSubmitTimestamp = nowTime;
 
     // 2. Format Timestamp
     const now = new Date();

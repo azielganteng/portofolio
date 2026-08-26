@@ -235,15 +235,20 @@ document.addEventListener("DOMContentLoaded", () => {
       loadingTarget = Math.min(96, loadingTarget + step);
     }, 95);
 
-    window.addEventListener("load", () => {
+    if (document.readyState === "complete") {
       window.clearInterval(loadingTimer);
       finishPreloader();
-    }, { once: true });
+    } else {
+      window.addEventListener("load", () => {
+        window.clearInterval(loadingTimer);
+        finishPreloader();
+      }, { once: true });
+    }
 
     window.setTimeout(() => {
       window.clearInterval(loadingTimer);
       finishPreloader();
-    }, 3000);
+    }, 2800);
   } else {
     loadingTarget = 100;
     loadingValue = 100;
@@ -1369,19 +1374,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* =====================================================
-     COMMENTS WITH AUTO-MODERATION & BLACKLIST ENGINE
+     AUTO-MODERATION & BLACKLIST ENGINE
   ====================================================== */
-
-  const commentForm = $("#commentForm");
-  const commentList = $("#commentList");
-  const commentStatus = $("#commentStatus");
-  const storageKey = "azielPortfolioCommentsV2";
-
-  const defaultComments = [
-    { name: "Aziel (Admin)", text: "Selamat datang di portfolio backend saya! Silakan tinggalkan feedback di sini.", time: "24 Agu 2026" },
-    { name: "Tech Recruiter", text: "Clean portfolio and impressive API simulation! Keep it up Aziel.", time: "24 Agu 2026" },
-    { name: "Senior Dev", text: "Struktur REST API dan validasi anti-bentroknya rapi bro.", time: "24 Agu 2026" }
-  ];
 
   // Comprehensive Profanity & Blacklist List with Anti-Bypass
   const bannedKeywords = {
